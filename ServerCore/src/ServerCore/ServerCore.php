@@ -25,5 +25,4 @@ class ServerCore extends PluginBase{
   
   function onDisable(){
     $this->getLogger()->warning(c::BOLD.c::DARK_RED."(!)".c::RESET.c::RED." ServerCore has been disabled")
-  
-}
+  }
