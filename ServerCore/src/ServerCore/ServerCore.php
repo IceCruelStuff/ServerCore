@@ -27,3 +27,4 @@ class ServerCore extends PluginBase{
       return self::$disable;
   }
 }
+// there is error here
