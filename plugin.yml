@@ -2,6 +2,10 @@ name: ServerCore
 main: ServerCore\ServerCore
 version: 1.0.0
 api: [1.0.0, 2.0.0, 3.0.0, 4.0.0]
+load:
+author: IceCruelStuff
+description: A plugin to heal players
+website: https://github.com/IceCruelStuff/ServerCore
 commands:
   heal:
     description: Heal yourself
@@ -9,4 +13,4 @@ permissions:
   Mod:
     default: op
     description: Allows player to use /heal
-    children
+    children:
