@@ -1,0 +1,12 @@
+name: ServerCore
+main: ServerCore\ServerCore
+version: 1.0.0
+api: [1.0.0, 2.0.0, 3.0.0, 4.0.0]
+commands:
+  heal:
+    description: Heal yourself
+permissions:
+  Mod:
+    default: op
+    description: Allows player to use /heal
+    children
