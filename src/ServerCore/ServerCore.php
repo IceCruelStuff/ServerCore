@@ -21,7 +21,7 @@ class ServerCore extends PluginBase{
   public function onCommand(CommandSender $sender, Command $cmd, $label, array $args){
     if(strtolower($cmd->getName()) == "heal"){
       if($sender->hasPermission("Mod")){
-        $sender->sendMessage(c::BOLD.c::DARK_AQUA."(!)"c.::DARK_PURPLE." You have been healed");
+        $sender->sendMessage(c::BOLD.c::DARK_AQUA."(!)"c::DARK_PURPLE." You have been healed");
         $sender->setHealth(20.0);
       }elseif(!$sender->hasPermission("Mod")){
              $sender->sendMessage(c::BOLD.c::DARK_RED."(!)".c::RESET.c::RED." You do not have permission to run this command");
