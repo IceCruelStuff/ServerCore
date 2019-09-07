@@ -11,8 +11,8 @@ class ServerCore extends PluginBase{
     $this->getLogger()->notice(c::BOLD.c::DARK_AQUA."(!)".c::RESET.c::DARK_PURPLE." ServerCore has been enabled");
   }
   
-  public function onCommand(CommandSender $sender, Command $cmd, $label, array $args){
-    if(strtolower($cmd->getName()) == "heal"){
+  public function onCommand(CommandSender $sender, Command $command, $label, array $args){
+    if(strtolower($command->getName()) == "heal"){
       if($sender->hasPermission("Mod")){
         $sender->sendMessage(c::BOLD.c::DARK_AQUA."(!)",c::DARK_PURPLE." You have been healed");
         $sender->setHealth(20.0);
