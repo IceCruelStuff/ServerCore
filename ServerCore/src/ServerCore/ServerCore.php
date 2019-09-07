@@ -8,10 +8,10 @@ use pocketmine\Server;
 use pocketmine\utils\TextFormat as c;
 class ServerCore extends PluginBase{
   public function onEnable(){
-    $this->getLogger()->notice(c::BOLD.c::DARK_AQUA."(!)".c::RESET.c::DARK_PURPLE." ServerCore has been enabled"): bool;
+    $this->getLogger()->notice(c::BOLD.c::DARK_AQUA."(!)".c::RESET.c::DARK_PURPLE." ServerCore has been enabled");
   }
   
-  public function onCommand(CommandSender $sender, Command $command, string $label, array $args){
+  public function onCommand(CommandSender $sender, Command $command, string $label, array $args): bool{
     if(strtolower($command->getName()) == "heal"){
       if($sender->hasPermission("Mod")){
         $sender->sendMessage(c::BOLD.c::DARK_AQUA."(!)",c::DARK_PURPLE." You have been healed");
