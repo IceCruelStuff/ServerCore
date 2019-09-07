@@ -8,7 +8,7 @@ use pocketmine\Server;
 use pocketmine\utils\TextFormat as c;
 class ServerCore extends PluginBase{
   public function onEnable(){
-    $this->getLogger()->notice(c::BOLD.c::DARK_AQUA."(!)".c::RESET.c::DARK_PURPLE." ServerCore has been enabled");
+    $this->getLogger()->notice(c::BOLD.c::DARK_AQUA."(!)".c::RESET.c::DARK_PURPLE." ServerCore has been enabled"): bool;
   }
   
   public function onCommand(CommandSender $sender, Command $command, string $label, array $args){
