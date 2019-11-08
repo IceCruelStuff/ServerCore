@@ -7,7 +7,7 @@ use pocketmine\Player;
 use pocketmine\Server;
 use pocketmine\utils\TextFormat as c;
 class ServerCore extends PluginBase{
-  public function onEnable(){
+  public function onEnable() : void{
     $this->getLogger()->notice(c::BOLD.c::DARK_AQUA."(!)".c::RESET.c::DARK_PURPLE." ServerCore has been enabled");
   }
   
