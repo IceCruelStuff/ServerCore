@@ -3,5 +3,5 @@ branches:
 - master
 projects:
   ServerCore:
-    path: "ServerCore/"
+    path: ""
 ...
