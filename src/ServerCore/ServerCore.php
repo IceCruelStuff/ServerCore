@@ -24,6 +24,7 @@ class ServerCore extends PluginBase{
                 $sender->sendMessage(c::BOLD.c::DARK_RED."(!)".c::RESET.c::RED." You do not have permission to run this command");
             }
         }
+        return true;
     }
 
     public function onDisable() {
