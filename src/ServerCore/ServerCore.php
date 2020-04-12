@@ -2,9 +2,6 @@
 
 namespace ServerCore;
 
-use ServerCore\AntiHack\AntiHackLoader;
-use ServerCore\Elytra\Main;
-use ServerCore\Fireworks\Loader;
 use pocketmine\command\CommandSender;
 use pocketmine\command\Command;
 use pocketmine\Player;
