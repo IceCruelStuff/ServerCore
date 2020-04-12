@@ -16,14 +16,16 @@ class ServerCore extends PluginBase{
     }
 
     public function onCommand(CommandSender $sender, Command $command, string $label, array $args): bool {
-        switch($command->getName()) {
-            case "heal":
+        if($command->getName() === "ping"){
+            if($sender instanceof Player){
                 if($sender->hasPermission("healcommand")){
                     $sender->sendMessage(c::DARK_PURPLE." You have been healed");
                     $sender->setHealth(20);
                 } elseif(!$sender->hasPermission("healcommand")){
                     $sender->sendMessage(c::RESET.c::RED." You do not have permission to run this command");
                 }
+            }
+            return true;
         }
         return false;
     }
