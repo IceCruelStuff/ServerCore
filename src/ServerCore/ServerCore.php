@@ -19,10 +19,10 @@ class ServerCore extends PluginBase{
         switch($command->getName()) {
             case "heal":
                 if($sender->hasPermission("healcommand")){
-                    $sender->sendMessage(c::BOLD.c::DARK_AQUA."(!)",c::DARK_PURPLE." You have been healed");
-                    $sender->setHealth(20.0);
+                    $sender->sendMessage(c::DARK_PURPLE." You have been healed");
+                    $sender->setHealth($sender->getMaxHealth());
                 } elseif(!$sender->hasPermission("healcommand")){
-                    $sender->sendMessage(c::BOLD.c::DARK_RED."(!)".c::RESET.c::RED." You do not have permission to run this command");
+                    $sender->sendMessage(c::RESET.c::RED." You do not have permission to run this command");
                 }
         }
         return false;
