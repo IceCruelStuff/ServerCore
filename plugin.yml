@@ -1,8 +1,8 @@
 name: ServerCore
 main: ServerCore\ServerCore
-version: 1.1
+version: 1.2
 api: 3.0.0, 4.0.0
-load:
+load: STARTUP
 author: IceCruelStuff
 description: A plugin to heal players
 website: https://github.com/IceCruelStuff/ServerCore
