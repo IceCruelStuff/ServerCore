@@ -28,6 +28,8 @@ use pocketmine\utils\TextFormat as C;
 use pocketmine\utils\TextFormat;
 use pocketmine\Player;
 use pocketmine\Server;
+use ServerCore\task\ScoreboardTask;
+use ServerCore\Scoreboard;
 
 class ServerCore extends PluginBase {
 
@@ -40,6 +42,8 @@ class ServerCore extends PluginBase {
         $this->saveResource("warnedPlayers.txt");
         $this->warnedPlayers = new Config($this->getDataFolder()."warnedPlayers.txt", Config::ENUM);
         $this->warnedPlayers->save();
+        $this->saveResource("config.yml");
+        $this->getScheduler()->scheduleRepeatingTask(new ScoreboardTask($this, 0), (int)$this->getConfig()->get("update-interval"));
     }
 
     public function onDisable() : void {
