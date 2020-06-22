@@ -42,8 +42,25 @@ class ServerCore extends PluginBase {
         $this->saveResource("warnedPlayers.txt");
         $this->warnedPlayers = new Config($this->getDataFolder()."warnedPlayers.txt", Config::ENUM);
         $this->warnedPlayers->save();
-        $this->saveResource("config.yml");
+        if (!file_exists($this->getDataFolder() . "config.yml")) {
+            $this->saveResource("config.yml");
+        }
+        $this->config = new Config($this->getDataFolder() . 'config.yml' . Config::YAML, array(
+            "disable-lava" => false,
+            "disable-tnt" => false,
+            "disable-bucket" => false
+        ))
         $this->getScheduler()->scheduleRepeatingTask(new ScoreboardTask($this, 0), (int)$this->getConfig()->get("update-interval"));
+        $this->config->save();
+        if (!$this->config->get("disable-lava")) {
+            $this->config->set("disable-lava", false);
+        }
+        if (!$this->config->get("disable-tnt")) {
+            $this->config->set("disable-tnt", false);
+        }
+        if (!$this->config->get("disable-bucket")) {
+            $this->config->set("disable-bucket", false);
+        }
     }
 
     public function onDisable() : void {
@@ -100,10 +117,10 @@ class ServerCore extends PluginBase {
             case "heal":
                 if ($sender instanceof Player) {
                     if ($sender->hasPermission("command.heal")) {
-                        $sender->sendMessage(c::DARK_PURPLE." You have been healed");
+                        $sender->sendMessage(C::DARK_PURPLE." You have been healed");
                         $sender->setHealth(20);
                     } elseif (!$sender->hasPermission("command.heal")) {
-                        $sender->sendMessage(c::RESET.c::RED."You do not have permission to run this command");
+                        $sender->sendMessage(C::RESET.C::RED."You do not have permission to run this command");
                     }
                 }
                 break;
@@ -121,21 +138,21 @@ class ServerCore extends PluginBase {
                                 $action = strtolower($this->getConfig()->get("Action"));
                                 if ($action === "kick") {
                                     $player->kick($msg, false);
-                                    $sender->sendMessage(TextFormat::DARK_GREEN . $prefix . " " . $player->getName() . " was kicked");
+                                    $sender->sendMessage(TextFormat::DARK_GREEN . $this->prefix . " " . $player->getName() . " was kicked");
                                 }
                                 if ($action === "ban") {
                                     $player->setBanned(true);
-                                    $sender->sendMessage(TextFormat::DARK_GREEN . $prefix . " " . $player->getName() . " was banned");
+                                    $sender->sendMessage(TextFormat::DARK_GREEN . $this->prefix . " " . $player->getName() . " was banned");
                                 }
                                 if ($action === "deop") {
                                     $player->setOp(false);
-                                    $player->sendMessage(TextFormat::DARK_RED . $prefix . " Admin Warning: " . $msg);
-                                    $sender->sendMessage(TextFormat::DARK_GREEN . $prefix . " " . $player->getName() . " was deoped");
+                                    $player->sendMessage(TextFormat::DARK_RED . $this->prefix . " Admin Warning: " . $msg);
+                                    $sender->sendMessage(TextFormat::DARK_GREEN . $this->prefix . " " . $player->getName() . " was deoped");
                                 }
                                 return true;
                             } elseif ($this->getServer()->getPlayer($name)->isOnline()) {
-                                $player->sendMessage(TextFormat::DARK_RED . $prefix . " Admin Warning: " . $msg);
-                                $sender->sendMessage(TextFormat::DARK_GREEN . $prefix . " " . $player->getName() . " was warned.");
+                                $player->sendMessage(TextFormat::DARK_RED . $this->prefix . " Admin Warning: " . $msg);
+                                $sender->sendMessage(TextFormat::DARK_GREEN . $this->prefix . " " . $player->getName() . " was warned.");
                                 $this->warnedPlayers->set($name);
                                 return true;
                             }
@@ -276,24 +293,32 @@ class ServerCore extends PluginBase {
         $item = $player->getInventory()->getItemInHand()->getID();
         switch ($item) {
             case 10:
-                $player->getInventory()->setItemInHand(Item::get(Item::AIR, 0, 0));
-                $player->sendMessage($this->prefix . TextFormat::RED . " You are not allowed to use this item");
-                $this->getLogger()->critical($name . " tried to use lava");
+                if (!$this->config->get("disable-lava") == true) {
+                    $player->getInventory()->setItemInHand(Item::get(Item::AIR, 0, 0));
+                    $player->sendMessage($this->prefix . TextFormat::RED . " You are not allowed to use this item");
+                    $this->getLogger()->critical($name . " tried to use lava");
+                }
                 return true;
             case 11:
-                $player->getInventory()->setItemInHand(Item::get(Item::AIR, 0, 0));
-                $player->sendMessage($this->prefix . TextFormat::RED . " You are not allowed to use this item");
-                $this->getLogger()->critical($name . " tried to use lava");
+                if (!$this->config->get("disable-lava") == true) {
+                    $player->getInventory()->setItemInHand(Item::get(Item::AIR, 0, 0));
+                    $player->sendMessage($this->prefix . TextFormat::RED . " You are not allowed to use this item");
+                    $this->getLogger()->critical($name . " tried to use lava");
+                }
                 return true;
             case 46:
-                $player->getInventory()->setItemInHand(Item::get(Item::AIR, 0, 0));
-                $player->sendMessage($this->prefix . TextFormat::RED . " You are not allowed to use this item");
-                $this->getLogger()->critical($name . " tried to use TNT");
+                if (!$this->config->get("disable-tnt") == true) {
+                    $player->getInventory()->setItemInHand(Item::get(Item::AIR, 0, 0));
+                    $player->sendMessage($this->prefix . TextFormat::RED . " You are not allowed to use this item");
+                    $this->getLogger()->critical($name . " tried to use TNT");
+                }
                 return true;
             case 325:
-                $player->getInventory()->setItemInHand(Item::get(Item::AIR, 0, 0));
-                $player->sendMessage($this->prefix . TextFormat::RED . " You are not allowed to use this item");
-                $this->getLogger()->critical($name . " tried to use bucket");
+                if (!$this->config->get("disable-bucket") == true) {
+                    $player->getInventory()->setItemInHand(Item::get(Item::AIR, 0, 0));
+                    $player->sendMessage($this->prefix . TextFormat::RED . " You are not allowed to use this item");
+                    $this->getLogger()->critical($name . " tried to use bucket");
+                }
                 return true;
         }
     }
