@@ -33,6 +33,8 @@ use ServerCore\Scoreboard;
 
 class ServerCore extends PluginBase {
 
+    public $config;
+    public $warnedPlayers;
     public $prefix = TextFormat::GRAY . "[" . TextFormat::AQUA . "ServerCore" . TextFormat::GRAY . "] ";
 
     public function onEnable() : void {
@@ -186,6 +188,7 @@ class ServerCore extends PluginBase {
                 } else {
                     $sender->sendMessage(TextFormat::RED . "You do not have permission to run this command");
                 }
+                break;
             case "ping":
                 if ($sender instanceof Player) {
                     $sender->sendMessage("Ping time: " . $sender->getNetworkSession()->getPing() . "ms");
@@ -220,6 +223,7 @@ class ServerCore extends PluginBase {
                     return true;
                 }
         }
+        return true;
     }
 
     public function onInteract(PlayerInteractEvent $event) {
