@@ -37,6 +37,7 @@ class ServerCore extends PluginBase {
         $this->getServer()->getPluginManager()->registerEvents($this, $this);
         $this->getServer()->getScheduler()->scheduleRepeatingTask(new Scoreboard($this), 20);
         @mkdir($this->getDataFolder());
+        $this->saveResource("warnedPlayers.txt");
         $this->warnedPlayers = new Config($this->getDataFolder()."warnedPlayers.txt", Config::ENUM);
         $this->warnedPlayers->save();
     }
