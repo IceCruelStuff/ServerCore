@@ -244,7 +244,7 @@ class ServerCore extends PluginBase {
                         $sender->getInventory()->clearAll();
                         $sender->sendMessage("Your inventory has been cleared");
                     } else {
-                        $sender->sendMessage("You do not have permission to run this command")
+                        $sender->sendMessage("You do not have permission to run this command");
                     }
                 } else {
                     $sender->sendMessage("Please use this command in-game");
