@@ -192,7 +192,7 @@ class ServerCore extends PluginBase {
                 break;
             case "ping":
                 if ($sender instanceof Player) {
-                    $sender->sendMessage("Ping time: " . $sender->->getPing() . "ms");
+                    $sender->sendMessage("Ping time: " . $sender->getPing() . "ms");
                 }
                 break;
             case "info":
