@@ -37,7 +37,7 @@ class ServerCore extends PluginBase {
 
     public function onEnable() : void {
         $this->getServer()->getPluginManager()->registerEvents($this, $this);
-        $this->getServer()->getScheduler()->scheduleRepeatingTask(new Scoreboard($this), 20);
+        $this->getScheduler()->scheduleRepeatingTask(new Scoreboard($this), 20);
         @mkdir($this->getDataFolder());
         $this->saveResource("warnedPlayers.txt");
         $this->warnedPlayers = new Config($this->getDataFolder()."warnedPlayers.txt", Config::ENUM);
@@ -50,7 +50,7 @@ class ServerCore extends PluginBase {
             "disable-tnt" => false,
             "disable-bucket" => false
         ));
-        $this->getServer()->getScheduler()->scheduleRepeatingTask(new ScoreboardTask($this, 0), (int)$this->getConfig()->get("update-interval"));
+        $this->getScheduler()->scheduleRepeatingTask(new ScoreboardTask($this, 0), (int)$this->getConfig()->get("update-interval"));
         $this->config->save();
         if (!$this->config->get("disable-lava")) {
             $this->config->set("disable-lava", false);
