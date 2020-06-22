@@ -24,7 +24,7 @@ use pocketmine\nbt\tag\IntTag;
 use pocketmine\plugin\PluginBase;
 use pocketmine\scheduler\PluginTask;
 use pocketmine\utils\Config;
-use pocketmine\utils\TextFormat as c;
+use pocketmine\utils\TextFormat as C;
 use pocketmine\utils\TextFormat;
 use pocketmine\Player;
 use pocketmine\Server;
@@ -34,13 +34,15 @@ class ServerCore extends PluginBase {
     public $prefix = TextFormat::GRAY . "[" . TextFormat::AQUA . "ServerCore" . TextFormat::GRAY . "] ";
 
     public function onEnable() : void {
-        $this->getLogger()->notice(c::BOLD . c::DARK_AQUA . "(!)" . c::RESET.c::DARK_PURPLE . " ServerCore has been enabled");
         $this->getServer()->getPluginManager()->registerEvents($this, $this);
         $this->getServer()->getScheduler()->scheduleRepeatingTask(new Scoreboard($this), 20);
+        @mkdir($this->getDataFolder());
+        $this->warnedPlayers = new Config($this->getDataFolder()."warnedPlayers.txt", Config::ENUM);
+        $this->warnedPlayers->save();
     }
 
     public function onDisable() : void {
-        $this->getLogger()->warning(c::BOLD.c::DARK_RED . "(!)" . c::RESET . c::RED . " ServerCore has been disabled");
+        $this->warnedPlayers->save();
     }
 
     public function mainItems(Player $player) {
@@ -96,10 +98,72 @@ class ServerCore extends PluginBase {
                         $sender->sendMessage(c::DARK_PURPLE." You have been healed");
                         $sender->setHealth(20);
                     } elseif (!$sender->hasPermission("healcommand")) {
-                        $sender->sendMessage(c::RESET.c::RED." You do not have permission to run this command");
+                        $sender->sendMessage(c::RESET.c::RED."You do not have permission to run this command");
                     }
                 }
                 break;
+            case "warn":
+                if ($sender->hasPermission("command.warn")) {
+                    if ((!isset($args[0])) || (!isset($args[1]))) {
+                        $sender->sendMessage(TextFormat::GREEN . "Please enter the player name and the message correctly.");
+                        return true;
+                    } elseif ($this->getServer()->getPlayer($args[0]) instanceof Player && $this->getServer()->getPlayer($args[0])->isOnline()) {
+                        if ($args[1] !== null) {
+                            $name = strtolower(array_shift($args));
+                            $player = $this->getServer()->getPlayer($name);
+                            $msg = implode(' ', $args);
+                            if ($this->warnedPlayers->exists($name)) {
+                                $action = strtolower($this->getConfig()->get("Action"));
+                                if ($action === "kick") {
+                                    $player->kick($msg, false);
+                                    $sender->sendMessage(TextFormat::DARK_GREEN . $prefix . " " . $player->getName() . " was kicked");
+                                }
+                                if ($action === "ban") {
+                                    $player->setBanned(true);
+                                    $sender->sendMessage(TextFormat::DARK_GREEN . $prefix . " " . $player->getName() . " was banned");
+                                }
+                                if ($action === "deop") {
+                                    $player->setOp(false);
+                                    $player->sendMessage(TextFormat::DARK_RED . $prefix . " Admin Warning: " . $msg);
+                                    $sender->sendMessage(TextFormat::DARK_GREEN . $prefix . " " . $player->getName() . " was deoped");
+                                }
+                                return true;
+                            } elseif ($this->getServer()->getPlayer($name)->isOnline()) {
+                                $player->sendMessage(TextFormat::DARK_RED . $prefix . " Admin Warning: " . $msg);
+                                $sender->sendMessage(TextFormat::DARK_GREEN . $prefix . " " . $player->getName() . " was warned.");
+                                $this->warnedPlayers->set($name);
+                                return true;
+                            }
+                        }
+                    } else {
+                        $sender->sendMessage(TextFormat::YELLOW . "Player does not exist or is not online.");
+                        return true;
+                    }
+                } else {
+                    $sender->sendMessage(TextFormat::RED . "You do not have permission to run this command");
+                    return true;
+                }
+            case "forgive":
+                if ($sender->hasPermission("command.forgive")) {
+                    if (isset($args[0])) {
+                        if ($this->warnedPlayers->exists($args[0])) {
+                            $this->warnedPlayers->remove($args[0]);
+                            $player = $this->getServer()->getPlayer($args[0]);
+                            $action = strtolower($this->warnedPlayers()->get("Action"));
+                            if ($action === "ban") {
+                                $player->setBanned(false);
+                            }
+                            if ($action === "deop") {
+                                $player->setOp(true);
+                            }
+                            $sender->sendMessage(TextFormat::BLUE . $args[0] . " has been forgiven.");
+                        } else {
+                            $sender->sendMessage(TextFormat::RED . "Player has not been warned before.");
+                        }
+                    }
+                } else {
+                    $sender->sendMessage(TextFormat::RED . "You do not have permission to run this command");
+                }
             case "ping":
                 if ($sender instanceof Player) {
                     $sender->sendMessage("Ping time: " . $sender->getNetworkSession()->getPing() . "ms");
