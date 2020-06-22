@@ -139,6 +139,8 @@ class ServerCore extends PluginBase {
                     } elseif (!$sender->hasPermission("command.heal")) {
                         $sender->sendMessage(C::RESET.C::RED."You do not have permission to run this command");
                     }
+                } else {
+                    $sender->sendMessage("Please use this command in-game");
                 }
                 break;
             case "warn":
@@ -205,8 +207,15 @@ class ServerCore extends PluginBase {
                 }
                 break;
             case "ping":
-                if ($sender instanceof Player) {
-                    $sender->sendMessage("Ping time: " . $sender->getPing() . "ms");
+            case "ms":
+                if ($sender->hasPermission("command.ping")) {
+                    if ($sender instanceof Player) {
+                        $sender->sendMessage("Ping: " . $sender->getPing() . "ms");
+                    } else {
+                        $sender->sendMessage("Please use this command in-game");
+                    }
+                } else {
+                    $sender->sendMessage("You do not have permission to run this command");
                 }
                 break;
             case "info":
@@ -227,14 +236,37 @@ class ServerCore extends PluginBase {
                     $sender->sendMessage($this->prefix. "§a/info voter|youtuber|vip");
                     return true;
                 }
-            case "hub":
+            case "clear":
+            case "clearinv":
                 if ($sender instanceof Player) {
-                    $spawnLocation = $this->getServer()->getDefaultLevel()->getSafeSpawn();
-                    $sender->teleport($spawnLocation);
-                    $sender->sendMessage($this->prefix . "§aWelcome to spawn");
-                    $this->mainItems($sender);
-                    $sender->setHealth(20);
-                    $sender->setFood(20);
+                    if ($sender->hasPermission("command.clear")) {
+                        $sender->getArmorInventory()->clearAll();
+                        $sender->getInventory()->clearAll();
+                        $sender->sendMessage("Your inventory has been cleared");
+                    } else {
+                        $sender->sendMessage("You do not have permission to run this command")
+                    }
+                } else {
+                    $sender->sendMessage("Please use this command in-game");
+                }
+                break;
+            case "lobby":
+            case "hub":
+                if ($sender->hasPermission("command.hub")) {
+                    if ($sender instanceof Player) {
+                        $spawnLocation = $this->getServer()->getDefaultLevel()->getSafeSpawn();
+                        $sender->teleport($spawnLocation);
+                        $sender->sendMessage($this->prefix . "§aWelcome to spawn");
+                        $this->mainItems($sender);
+                        $sender->setHealth(20);
+                        $sender->setFood(20);
+                        return true;
+                    } else {
+                        $sender->sendMessage("Please use this command in-game");
+                        return true;
+                    }
+                } else {
+                    $sender->sendMessage("You do not have permission to run this command");
                     return true;
                 }
         }
