@@ -8,7 +8,7 @@ An advanced and powerful server core for PocketMine-MP
 | :---: | :---: |
 | [![Download](https://img.shields.io/badge/download-latest-blue.svg)](https://github.com/IceCruelStuff/ServerCore/releases/latest/download/ServerCore.phar) | [![License](https://img.shields.io/badge/license-Apache-blue.svg)](https://github.com/IceCruelStuff/ServerCore/blob/master/LICENSE) |
 
-```
+```license
 Copyright 2020 IceCruelStuff
 
 Licensed under the Apache License, Version 2.0 (the "License");
