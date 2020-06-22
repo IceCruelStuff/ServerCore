@@ -50,7 +50,7 @@ class ServerCore extends PluginBase {
             "disable-tnt" => false,
             "disable-bucket" => false
         ))
-        $this->getScheduler()->scheduleRepeatingTask(new ScoreboardTask($this, 0), (int)$this->getConfig()->get("update-interval"));
+        $this->getServer()->getScheduler()->scheduleRepeatingTask(new ScoreboardTask($this, 0), (int)$this->getConfig()->get("update-interval"));
         $this->config->save();
         if (!$this->config->get("disable-lava")) {
             $this->config->set("disable-lava", false);
