@@ -34,6 +34,7 @@ use ServerCore\Scoreboard;
 class ServerCore extends PluginBase {
 
     public $config;
+    public $hideAll;
     public $warnedPlayers;
     public $prefix = TextFormat::GRAY . "[" . TextFormat::AQUA . "ServerCore" . TextFormat::GRAY . "] ";
 
@@ -173,7 +174,7 @@ class ServerCore extends PluginBase {
                         if ($this->warnedPlayers->exists($args[0])) {
                             $this->warnedPlayers->remove($args[0]);
                             $player = $this->getServer()->getPlayer($args[0]);
-                            $action = strtolower($this->warnedPlayers()->get("Action"));
+                            $action = strtolower($this->warnedPlayers->get("Action"));
                             if ($action === "ban") {
                                 $player->setBanned(false);
                             }
@@ -191,7 +192,7 @@ class ServerCore extends PluginBase {
                 break;
             case "ping":
                 if ($sender instanceof Player) {
-                    $sender->sendMessage("Ping time: " . $sender->getNetworkSession()->getPing() . "ms");
+                    $sender->sendMessage("Ping time: " . $sender->->getPing() . "ms");
                 }
                 break;
             case "info":
@@ -254,7 +255,7 @@ class ServerCore extends PluginBase {
             $player->getInventory()->remove(Item::get(280)->setCustomName("§ePlayers Hiding"));
             $player->getInventory()->setItem(6, Item::get(369)->setCustomName("§ePlayers Show"));
             $player->sendMessage($this->prefix . "§aAll players are now invisible!");
-            $this->hideall[] = $player;
+            $this->hideAll[] = $player;
             foreach ($this->getServer()->getOnlinePlayers() as $p2) {
                 $player->hideplayer($p2);
             }
@@ -262,7 +263,7 @@ class ServerCore extends PluginBase {
             $player->getInventory()->remove(Item::get(369)->setCustomName("§ePlayers Show"));
             $player->getInventory()->setItem(6, Item::get(280)->setCustomName("§ePlayer Hiding"));
             $player->sendMessage($this->prefix . "§aAll players are now visible again!");
-            unset($this->hideall[array_search($player, $this->hideall)]);
+            unset($this->hideAll[array_search($player, $this->hideAll)]);
             foreach ($this->getServer()->getOnlinePlayers() as $p2) {
                 $player->showplayer($p2);
             }
