@@ -4,13 +4,33 @@ version: 1.2
 api: 3.0.0, 4.0.0
 load: STARTUP
 author: IceCruelStuff
-description: A plugin to heal players
+description: An advanced core plugin
 website: https://github.com/IceCruelStuff/ServerCore
 commands:
   heal:
     description: Heal yourself
+    permission: command.heal
+    usage: /heal
+
+  warn:
+    description: Warns a player
+    permission: command.warn
+    usage: /warn <user> <string:message>
+
+  forgive:
+    description: Forgives a player
+    permission: command.forgive
+    usage: /forgive <user>
+
 permissions:
-  Mod:
+  command.warn:
+    description: Allows you to do /warn
     default: op
+
+  command.forgive:
+    description: Allows you to do /forgive
+    default: op
+
+  command.heal:
     description: Allows player to use /heal
-    children:
+    default: op
