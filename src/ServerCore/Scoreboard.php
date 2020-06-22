@@ -23,7 +23,7 @@ class Scoreboard implements Listener {
     private $plugin;
     private $scoreboards = [];
 
-    public function __construct(ServerCore $plugin) {
+    public function __construct(ServerCore $plugin, $instance, array $scoreboards) {
         $this->plugin = $plugin;
         $this->instance = $instance;
         $this->scoreboards = $scoreboards;
