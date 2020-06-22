@@ -34,7 +34,12 @@ use ServerCore\Scoreboard;
 class ServerCore extends PluginBase {
 
     public $config;
+    public $deaths;
+    public $faction;
+    public $group;
     public $hideAll;
+    public $kills;
+    public $money;
     public $warnedPlayers;
     public $prefix = TextFormat::GRAY . "[" . TextFormat::AQUA . "ServerCore" . TextFormat::GRAY . "] ";
 
@@ -64,6 +69,11 @@ class ServerCore extends PluginBase {
         if (!$this->config->get("disable-bucket")) {
             $this->config->set("disable-bucket", false);
         }
+        $this->faction = $this->getServer()-getPluginManager()->getPlugin("FactionsPro")->getPlayerFaction($player->getName());
+        $this->group = $this->getServer()-getPluginManager()->getPlugin("PurePerms")->getUserDataMgr()->getGroup($player)->getName();
+        $this->money = $this->getServer()-getPluginManager()->getPlugin("EconomyAPI")->myMoney($player->getName());
+        $this->kills = $this->getServer()-getPluginManager()->getPlugin("KillChat")->getKills($name);
+        $this->deaths = $this->getServer()-getPluginManager()->getPlugin("KillChat")->getDeaths($name);
     }
 
     public function onDisable() : void {
