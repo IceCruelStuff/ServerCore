@@ -37,6 +37,16 @@ commands:
     permission: command.clear
     usage: "/clearinv"
 
+  hub:
+    description: Teleports player to hub/lobby
+    permission: command.hub
+    usage: "/hub"
+    
+  lobby:
+    description: Teleports player to hub/lobby
+    permission: command.hub
+    usage: "/lobby"
+
 permissions:
   command.warn:
     description: Allows player to use /warn
@@ -57,3 +67,7 @@ permissions:
   command.clear:
     description: Allows player to use /clear or /clearinv
     default: op
+
+  command.hub:
+    description: Allows player to use /hub or /lobby
+    default: true
