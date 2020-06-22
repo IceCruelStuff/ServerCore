@@ -94,10 +94,10 @@ class ServerCore extends PluginBase {
         switch ($command->getName()) {
             case "heal":
                 if ($sender instanceof Player) {
-                    if ($sender->hasPermission("healcommand")) {
+                    if ($sender->hasPermission("command.heal")) {
                         $sender->sendMessage(c::DARK_PURPLE." You have been healed");
                         $sender->setHealth(20);
-                    } elseif (!$sender->hasPermission("healcommand")) {
+                    } elseif (!$sender->hasPermission("command.heal")) {
                         $sender->sendMessage(c::RESET.c::RED."You do not have permission to run this command");
                     }
                 }
