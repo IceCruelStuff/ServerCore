@@ -218,6 +218,25 @@ class ServerCore extends PluginBase {
                     $sender->sendMessage("You do not have permission to run this command");
                 }
                 break;
+            case "fly":
+            case "flight":
+                if ($sender->hasPermission("command.fly")) {
+                    if ($sender instanceof Player) {
+                        if ($sender->getAllowFlight()) {
+                            $sender->setFlying(false);
+                            $sender->setAllowFlight(false);
+                            $sender->sendMessage("You have disabled flight mode");
+                        } else {
+                            $sender->setAllowFlight(true);
+                            $sender->sendMessage("You have enabled flight mode");
+                        }
+                    } else {
+                        $sender->sendMessage("Please use this command in-game");
+                    }
+                } else {
+                    $sender->sendMessage("You do not have permission to run this command");
+                }
+                break;
             case "info":
                 if (!empty($args[0])) {
                     if ($args[0] == "voter") {
