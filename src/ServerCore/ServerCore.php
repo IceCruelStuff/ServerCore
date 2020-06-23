@@ -46,38 +46,46 @@ class ServerCore extends PluginBase {
     public function onEnable() : void {
         $this->getServer()->getPluginManager()->registerEvents($this, $this);
         $this->getScheduler()->scheduleRepeatingTask(new Scoreboard($this), 20);
+
         @mkdir($this->getDataFolder());
         $this->saveResource("warnedPlayers.txt");
         $this->warnedPlayers = new Config($this->getDataFolder()."warnedPlayers.txt", Config::ENUM);
         $this->warnedPlayers->save();
+
         if (!file_exists($this->getDataFolder() . "config.yml")) {
             $this->saveResource("config.yml");
         }
+
         $this->config = new Config($this->getDataFolder() . 'config.yml' . Config::YAML, array(
             "disable-lava" => false,
             "disable-tnt" => false,
             "disable-bucket" => false
         ));
+
         $this->getScheduler()->scheduleRepeatingTask(new ScoreboardTask($this, 0), (int)$this->getConfig()->get("update-interval"));
         $this->config->save();
+
         if (!$this->config->get("disable-lava")) {
             $this->config->set("disable-lava", false);
         }
+
         if (!$this->config->get("disable-tnt")) {
             $this->config->set("disable-tnt", false);
         }
+
         if (!$this->config->get("disable-bucket")) {
             $this->config->set("disable-bucket", false);
         }
-        foreach ($this->getServer()->getOnlinePlayers() as $p) {
-            $player = $p->getPlayer();
-            $name = $player->getName();
-            $this->faction = $this->getServer()-getPluginManager()->getPlugin("FactionsPro")->getPlayerFaction($player->getName());
-            $this->group = $this->getServer()-getPluginManager()->getPlugin("PurePerms")->getUserDataMgr()->getGroup($player)->getName();
-            $this->money = $this->getServer()-getPluginManager()->getPlugin("EconomyAPI")->myMoney($player->getName());
-            $this->kills = $this->getServer()-getPluginManager()->getPlugin("KillChat")->getKills($name);
-            $this->deaths = $this->getServer()-getPluginManager()->getPlugin("KillChat")->getDeaths($name);
-        }
+
+        $p = $this->getServer()->getOnlinePlayers();
+        $player = $p->getPlayer();
+        $name = $player->getName();
+
+        $this->faction = $this->getServer()-getPluginManager()->getPlugin("FactionsPro")->getPlayerFaction($player->getName());
+        $this->group = $this->getServer()-getPluginManager()->getPlugin("PurePerms")->getUserDataMgr()->getGroup($player)->getName();
+        $this->money = $this->getServer()-getPluginManager()->getPlugin("EconomyAPI")->myMoney($player->getName());
+        $this->kills = $this->getServer()-getPluginManager()->getPlugin("KillChat")->getKills($name);
+        $this->deaths = $this->getServer()-getPluginManager()->getPlugin("KillChat")->getDeaths($name);
     }
 
     public function onDisable() : void {
