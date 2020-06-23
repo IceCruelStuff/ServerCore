@@ -115,17 +115,23 @@ class ServerCore extends PluginBase {
         $spawn = $this->getServer()->getDefaultLevel()->getSafeSpawn();
         $player->setGamemode(0);
         $player->teleport($spawn);
-        $event->setJoinMessage("");
         $this->mainItems($player);
         $player->setGamemode(0);
         if ($player->isOP()) {
             $event->setJoinMessage(C::RED . $name . C::AQUA . " has entered the game");
+        } else {
+            $event->setJoinMessage("");
         }
     }
 
     public function onQuit(PlayerQuitEvent $event) {
         $player = $event->getPlayer();
-        $event->setQuitMessage("");
+        $name = $player->getName();
+        if ($player->isOP()) {
+            $event->setQuitMessage(C::YELLOW . $player . " has left the game");
+        } else {
+            $event->setQuitMessage("");
+        }
     }
 
     public function onCommand(CommandSender $sender, Command $command, string $label, array $args) : bool {
