@@ -395,28 +395,28 @@ class ServerCore extends PluginBase {
         $item = $player->getInventory()->getItemInHand()->getID();
         switch ($item) {
             case 10:
-                if (!$this->config->get("disable-lava") == true) {
+                if ($this->config->get("disable-lava") == true) {
                     $player->getInventory()->setItemInHand(Item::get(Item::AIR, 0, 0));
                     $player->sendMessage($this->prefix . TextFormat::RED . " You are not allowed to use this item");
                     $this->getLogger()->critical($name . " tried to use lava");
                 }
                 return true;
             case 11:
-                if (!$this->config->get("disable-lava") == true) {
+                if ($this->config->get("disable-lava") == true) {
                     $player->getInventory()->setItemInHand(Item::get(Item::AIR, 0, 0));
                     $player->sendMessage($this->prefix . TextFormat::RED . " You are not allowed to use this item");
                     $this->getLogger()->critical($name . " tried to use lava");
                 }
                 return true;
             case 46:
-                if (!$this->config->get("disable-tnt") == true) {
+                if ($this->config->get("disable-tnt") == true) {
                     $player->getInventory()->setItemInHand(Item::get(Item::AIR, 0, 0));
                     $player->sendMessage($this->prefix . TextFormat::RED . " You are not allowed to use this item");
                     $this->getLogger()->critical($name . " tried to use TNT");
                 }
                 return true;
             case 325:
-                if (!$this->config->get("disable-bucket") == true) {
+                if ($this->config->get("disable-bucket") == true) {
                     $player->getInventory()->setItemInHand(Item::get(Item::AIR, 0, 0));
                     $player->sendMessage($this->prefix . TextFormat::RED . " You are not allowed to use this item");
                     $this->getLogger()->critical($name . " tried to use bucket");
