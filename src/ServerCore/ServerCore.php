@@ -77,15 +77,16 @@ class ServerCore extends PluginBase {
             $this->config->set("disable-bucket", false);
         }
 
-        $p = $this->getServer()->getOnlinePlayers();
-        $player = $p->getPlayer();
-        $name = $player->getName();
+        foreach ($this->getServer()->getOnlinePlayers() as $p) {
+            $player = $p->getPlayer();
+            $name = $player->getName();
 
-        $this->faction = $this->getServer()-getPluginManager()->getPlugin("FactionsPro")->getPlayerFaction($player->getName());
-        $this->group = $this->getServer()-getPluginManager()->getPlugin("PurePerms")->getUserDataMgr()->getGroup($player)->getName();
-        $this->money = $this->getServer()-getPluginManager()->getPlugin("EconomyAPI")->myMoney($player->getName());
-        $this->kills = $this->getServer()-getPluginManager()->getPlugin("KillChat")->getKills($name);
-        $this->deaths = $this->getServer()-getPluginManager()->getPlugin("KillChat")->getDeaths($name);
+            $this->faction = $this->getServer()-getPluginManager()->getPlugin("FactionsPro")->getPlayerFaction($player->getName());
+            $this->group = $this->getServer()-getPluginManager()->getPlugin("PurePerms")->getUserDataMgr()->getGroup($player)->getName();
+            $this->money = $this->getServer()-getPluginManager()->getPlugin("EconomyAPI")->myMoney($player->getName());
+            $this->kills = $this->getServer()-getPluginManager()->getPlugin("KillChat")->getKills($name);
+            $this->deaths = $this->getServer()-getPluginManager()->getPlugin("KillChat")->getDeaths($name);
+        }
     }
 
     public function onDisable() : void {
