@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace ServerCore\task;
 
 use pocketmine\scheduler\Task;
-use ServerCore\Scoreboard;
 use ServerCore\ServerCore;
 
 class ScoreboardTask extends Task {
@@ -26,7 +25,7 @@ class ScoreboardTask extends Task {
         if (!isset($titles[$this->titleIndex])) {
             $this->titleIndex = 0;
         }
-        $api = Scoreboard::getInstance();
+        $api = ServerCore::getInstance();
         foreach ($this->plugin->getServer()->getOnlinePlayers() as $p) {
             $player = $p->getPlayer();
             $name = $player->getName();

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace ServerCore;
 
 use pocketmine\command\CommandSender;
@@ -21,17 +23,21 @@ use pocketmine\level\particle\FlameParticle;
 use pocketmine\math\Vector2;
 use pocketmine\math\Vector3;
 use pocketmine\nbt\tag\IntTag;
+use pocketmine\network\mcpe\protocol\RemoveObjectivePacket;
+use pocketmine\network\mcpe\protocol\SetDisplayObjectivePacket;
+use pocketmine\network\mcpe\protocol\SetScorePacket;
+use pocketmine\network\mcpe\protocol\types\ScorePacketEntry;
 use pocketmine\plugin\PluginBase;
-use pocketmine\scheduler\PluginTask;
+use pocketmine\scheduler\TaskScheduler;
+use pocketmine\scheduler\Task;
 use pocketmine\utils\Config;
 use pocketmine\utils\TextFormat as C;
 use pocketmine\utils\TextFormat;
 use pocketmine\Player;
 use pocketmine\Server;
 use ServerCore\task\ScoreboardTask;
-use ServerCore\Scoreboard;
 
-class ServerCore extends PluginBase {
+class ServerCore extends PluginBase implements Listener {
 
     public $config;
     public $deaths;
@@ -43,27 +49,28 @@ class ServerCore extends PluginBase {
     public $warnedPlayers;
     public $prefix = TextFormat::GRAY . "[" . TextFormat::AQUA . "ServerCore" . TextFormat::GRAY . "] ";
 
+    private static $instance;
+
+    private $scoreboards = [];
+
     public function onEnable() : void {
         $this->getServer()->getPluginManager()->registerEvents($this, $this);
-        $this->getScheduler()->scheduleRepeatingTask(new Scoreboard($this), 20);
 
         @mkdir($this->getDataFolder());
         $this->saveResource("warnedPlayers.txt");
         $this->warnedPlayers = new Config($this->getDataFolder()."warnedPlayers.txt", Config::ENUM);
-        $this->warnedPlayers->save();
 
         if (!file_exists($this->getDataFolder() . "config.yml")) {
             $this->saveResource("config.yml");
         }
 
-        $this->config = new Config($this->getDataFolder() . 'config.yml' . Config::YAML, array(
+        $this->config = new Config($this->getDataFolder() . 'config.yml', Config::YAML, array(
             "disable-lava" => false,
             "disable-tnt" => false,
             "disable-bucket" => false
         ));
 
         $this->getScheduler()->scheduleRepeatingTask(new ScoreboardTask($this, 0), (int)$this->getConfig()->get("update-interval"));
-        $this->config->save();
 
         if (!$this->config->get("disable-lava")) {
             $this->config->set("disable-lava", false);
@@ -87,10 +94,68 @@ class ServerCore extends PluginBase {
             $this->kills = $this->getServer()-getPluginManager()->getPlugin("KillChat")->getKills($name);
             $this->deaths = $this->getServer()-getPluginManager()->getPlugin("KillChat")->getDeaths($name);
         }
+        $this->config->save();
+        $this->warnedPlayers->save();
     }
 
     public function onDisable() : void {
         $this->warnedPlayers->save();
+    }
+
+    public function onLoad() : void {
+        self::$instance = $this;
+    }
+
+    public static function getInstance() : ServerCore {
+        return self::$instance;
+    }
+
+    public function new(Player $player, string $objectiveName, string $displayName) : void {
+        if (isset($this->scoreboards[$player->getName()])) {
+            $this->remove($player);
+        }
+        $pk = new SetDisplayObjectivePacket();
+        $pk->displaySlot = "sidebar";
+        $pk->objectiveName = $objectiveName;
+        $pk->displayName = $displayName;
+        $pk->criteriaName = "dummy";
+        $pk->sortOrder = 0;
+        $player->sendDataPacket($pk);
+        $this->scoreboards[$player->getName()] = $objectiveName;
+    }
+
+    public function remove(Player $player) : void {
+        $objectiveName = $this->getObjectiveName($player);
+        $pk = new RemoveObjectivePacket();
+        $pk->objectiveName = $objectiveName;
+        $player->sendDataPacket($pk);
+        unset($this->scoreboards[$player->getName()]);
+    }
+
+    public function setLine(Player $player, int $score, string $message) : void {
+        if (!isset($this->scoreboards[$player->getName()])) {
+            $this->getLogger()->error("Cannot set a score to a player with no scoreboard");
+            return;
+        }
+        if ($score > 15 || $score < 1) {
+            $this->getLogger()->error("Score must be between the value of 1-15. $score out of range");
+            return;
+        }
+        $objectiveName = $this->getObjectiveName($player);
+        $entry = new ScorePacketEntry();
+        $entry->objectiveName = $objectiveName;
+        $entry->type = $entry::TYPE_FAKE_PLAYER;
+        $entry->customName = $message;
+        $entry->score = $score;
+        $entry->scoreboardId = $score;
+        $pk = new SetScorePacket();
+        $pk->type = $pk::TYPE_CHANGE;
+        $pk->entries[] = $entry;
+        $player->sendDataPacket($pk);
+    }
+
+    public function getObjectiveName(Player $player) : ?string {
+        return isset($this->scoreboards[$player->getName()]) ? $this->scoreboards[$player->getName()] : null;
     }
 
     public function mainItems(Player $player) {
@@ -134,6 +199,9 @@ class ServerCore extends PluginBase {
     }
 
     public function onQuit(PlayerQuitEvent $event) {
+        if (isset($this->scoreboards[($player = $event->getPlayer()->getName())])) {
+            unset($this->scoreboards[$player]);
+        }
         $player = $event->getPlayer();
         $name = $player->getName();
         if ($player->isOP()) {
