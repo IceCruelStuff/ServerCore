@@ -158,6 +158,23 @@ class ServerCore extends PluginBase {
                     $sender->sendMessage("Please use this command in-game");
                 }
                 break;
+            case "feed":
+            case "eat":
+                if ($sender instanceof Player) {
+                    if ($sender->hasPermission("command.feed")) {
+                        if ($sender->getFood() == 20) {
+                            $sender->sendMessage("You already have maxed food");
+                        } else {
+                            $sender->setFood(20);
+                            $sender->sendMessage("You have been fed");
+                        }
+                    } else {
+                        $sender->sendMessage("You do not have permission to run this command");
+                    }
+                } else {
+                    $sender->sendMessage("Please use this command in-game");
+                }
+                break;
             case "warn":
                 if ($sender->hasPermission("command.warn")) {
                     if ((!isset($args[0])) || (!isset($args[1]))) {
@@ -315,23 +332,23 @@ class ServerCore extends PluginBase {
         $block = $event->getBlock();
         if ($item->getName() == C::BOLD . C::GOLD . "Teleporter") {
             $this->teleportItems($player);
-        } elseif ($item->getName() == C::BOLD . C::GOLD . "Info") {
+        } else if ($item->getName() == C::BOLD . C::GOLD . "Info") {
             $player->sendMessage($this->prefix . "§ause /info voter|youtuber|vip");
-        } elseif ($item->getName() == C::BOLD . C::RED . "Bakery") {
+        } else if ($item->getName() == C::BOLD . C::RED . "Bakery") {
             $this->mainItems($player);
-        } elseif ($item->getName() == C::BOLD . C::BLUE . "Light Wars") {
+        } else if ($item->getName() == C::BOLD . C::BLUE . "Light Wars") {
             $this->mainItems($player);
             $x = 232;
             $y = 4;
             $z = 270;
             $player->teleport(new Vector3($x, $y, $z));
-        } elseif ($item->getName() == C::BOLD.C::RED."QSG") {
+        } else if ($item->getName() == C::BOLD.C::RED."QSG") {
             $this->mainItems($player);
             $x = 259;
             $y = 4;
             $z = 248;
             $player->teleport(new Vector3($x, $y, $z));
-        } elseif ($item->getCustomName() == "§ePlayer Hiding") {
+        } else if ($item->getCustomName() == "§ePlayer Hiding") {
             $player->getInventory()->remove(Item::get(280)->setCustomName("§ePlayers Hiding"));
             $player->getInventory()->setItem(6, Item::get(369)->setCustomName("§ePlayers Show"));
             $player->sendMessage($this->prefix . "§aAll players are now invisible!");
@@ -339,7 +356,7 @@ class ServerCore extends PluginBase {
             foreach ($this->getServer()->getOnlinePlayers() as $p2) {
                 $player->hideplayer($p2);
             }
-        } elseif ($item->getCustomName() == "§ePlayers Show") {
+        } else if ($item->getCustomName() == "§ePlayers Show") {
             $player->getInventory()->remove(Item::get(369)->setCustomName("§ePlayers Show"));
             $player->getInventory()->setItem(6, Item::get(280)->setCustomName("§ePlayer Hiding"));
             $player->sendMessage($this->prefix . "§aAll players are now visible again!");

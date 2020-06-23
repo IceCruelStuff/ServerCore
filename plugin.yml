@@ -57,6 +57,16 @@ commands:
     permission: command.hub
     usage: "/lobby"
 
+  feed:
+    description: Feeds player
+    permission: command.feed
+    usage: "/feed"
+
+  eat:
+    description: Feeds player
+    permission: command.feed
+    usage: "/eat"
+
 permissions:
   command.warn:
     description: Allows player to use /warn
@@ -84,4 +94,8 @@ permissions:
 
   command.fly:
     description: Allows player to use /fly
+    default: op
+
+  command.feed:
+    description: Allows player to use /feed
     default: op
