@@ -37,6 +37,16 @@ commands:
     permission: command.clear
     usage: "/clearinv"
 
+  fly:
+    description: Allows player to fly
+    permission: command.fly
+    usage: "/fly"
+
+  flight:
+    description: Allows player to fly
+    permission: command.fly
+    usage: "/flight"
+
   hub:
     description: Teleports player to hub/lobby
     permission: command.hub
@@ -71,3 +81,7 @@ permissions:
   command.hub:
     description: Allows player to use /hub or /lobby
     default: true
+
+  command.fly:
+    description: Allows player to use /fly
+    default: op
