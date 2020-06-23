@@ -128,7 +128,7 @@ class ServerCore extends PluginBase {
         $player = $event->getPlayer();
         $name = $player->getName();
         if ($player->isOP()) {
-            $event->setQuitMessage(C::YELLOW . $player . " has left the game");
+            $event->setQuitMessage(C::YELLOW . $name . " has left the game");
         } else {
             $event->setQuitMessage("");
         }
