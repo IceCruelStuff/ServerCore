@@ -58,7 +58,7 @@ class ServerCore extends PluginBase implements Listener {
 
         @mkdir($this->getDataFolder());
         $this->saveResource("warnedPlayers.txt");
-        $this->warnedPlayers = new Config($this->getDataFolder()."warnedPlayers.txt", Config::ENUM);
+        $this->warnedPlayers = new Config($this->getDataFolder() . "warnedPlayers.txt", Config::ENUM);
 
         if (!file_exists($this->getDataFolder() . "config.yml")) {
             $this->saveResource("config.yml");
@@ -217,10 +217,10 @@ class ServerCore extends PluginBase implements Listener {
             case "heal":
                 if ($sender instanceof Player) {
                     if ($sender->hasPermission("command.heal")) {
-                        $sender->sendMessage(C::DARK_PURPLE." You have been healed");
+                        $sender->sendMessage(C::DARK_PURPLE . " You have been healed");
                         $sender->setHealth(20);
-                    } elseif (!$sender->hasPermission("command.heal")) {
-                        $sender->sendMessage(C::RESET.C::RED."You do not have permission to run this command");
+                    } else if (!$sender->hasPermission("command.heal")) {
+                        $sender->sendMessage(C::RESET . C::RED . "You do not have permission to run this command");
                     }
                 } else {
                     $sender->sendMessage("Please use this command in-game");
@@ -248,7 +248,7 @@ class ServerCore extends PluginBase implements Listener {
                     if ((!isset($args[0])) || (!isset($args[1]))) {
                         $sender->sendMessage(TextFormat::GREEN . "Please enter the player name and the message correctly.");
                         return true;
-                    } elseif ($this->getServer()->getPlayer($args[0]) instanceof Player && $this->getServer()->getPlayer($args[0])->isOnline()) {
+                    } else if ($this->getServer()->getPlayer($args[0]) instanceof Player && $this->getServer()->getPlayer($args[0])->isOnline()) {
                         if ($args[1] !== null) {
                             $name = strtolower(array_shift($args));
                             $player = $this->getServer()->getPlayer($name);
