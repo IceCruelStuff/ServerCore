@@ -1,7 +1,7 @@
 name: ServerCore
 main: ServerCore\ServerCore
 version: 1.2.1
-api: 3.0.0, 4.0.0
+api: 3.14.0
 load: STARTUP
 author: IceCruelStuff
 description: An advanced core plugin
