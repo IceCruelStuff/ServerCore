@@ -161,7 +161,7 @@ class ServerCore extends PluginBase implements Listener {
         return isset($this->scoreboards[$player->getName()]) ? $this->scoreboards[$player->getName()] : null;
     }
 
-    public function mainItems(Player $player) {
+    public function getMainItems(Player $player) {
         $player->getInventory()->clearAll();
         $player->getInventory()->setItem(0, Item::get(345)->setCustomName(C::BOLD . C::GOLD . "Teleporter"));
         $player->getInventory()->setItem(2, Item::get(339)->setCustomName(C::BOLD . C::GOLD . "Info"));
@@ -192,7 +192,7 @@ class ServerCore extends PluginBase implements Listener {
         $spawn = $this->getServer()->getDefaultLevel()->getSafeSpawn();
         $player->setGamemode(0);
         $player->teleport($spawn);
-        $this->mainItems($player);
+        $this->getMainItems($player);
         $player->setGamemode(0);
         if ($player->isOP()) {
             $event->setJoinMessage(C::RED . $name . C::AQUA . " has entered the game");
@@ -426,7 +426,7 @@ class ServerCore extends PluginBase implements Listener {
                         $spawnLocation = $this->getServer()->getDefaultLevel()->getSafeSpawn();
                         $sender->teleport($spawnLocation);
                         $sender->sendMessage($this->prefix . "§aWelcome to spawn");
-                        $this->mainItems($sender);
+                        $this->getMainItems($sender);
                         $sender->setHealth(20);
                         $sender->setFood(20);
                         return true;
@@ -453,15 +453,15 @@ class ServerCore extends PluginBase implements Listener {
         } else if ($item->getName() == C::BOLD . C::GOLD . "Info") {
             $player->sendMessage($this->prefix . "§ause /info voter|youtuber|vip");
         } else if ($item->getName() == C::BOLD . C::RED . "Bakery") {
-            $this->mainItems($player);
+            $this->getMainItems($player);
         } else if ($item->getName() == C::BOLD . C::BLUE . "Light Wars") {
-            $this->mainItems($player);
+            $this->getMainItems($player);
             $x = 232;
             $y = 4;
             $z = 270;
             $player->teleport(new Vector3($x, $y, $z));
         } else if ($item->getName() == C::BOLD.C::RED."QSG") {
-            $this->mainItems($player);
+            $this->getMainItems($player);
             $x = 259;
             $y = 4;
             $z = 248;
