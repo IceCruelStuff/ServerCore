@@ -47,6 +47,7 @@ class ServerCore extends PluginBase implements Listener {
     public $hideAll;
     public $kills;
     public $money;
+    public $music;
     public $warnedPlayers;
     public $prefix = TextFormat::GRAY . "[" . TextFormat::AQUA . "ServerCore" . TextFormat::GRAY . "] ";
 
@@ -90,6 +91,8 @@ class ServerCore extends PluginBase implements Listener {
         foreach ($this->getServer()->getOnlinePlayers() as $p) {
             $player = $p->getPlayer();
             $name = $player->getName();
+
+            $this->music = $this->getServer()->getPluginManager()->getPlugin("ZMusicBox");
 
             $this->faction = $this->getServer()-getPluginManager()->getPlugin("FactionsPro")->getPlayerFaction($player->getName());
             $this->group = $this->getServer()-getPluginManager()->getPlugin("PurePerms")->getUserDataMgr()->getGroup($player)->getName();
@@ -165,7 +168,9 @@ class ServerCore extends PluginBase implements Listener {
         $player->getInventory()->clearAll();
         $player->getInventory()->setItem(0, Item::get(345)->setCustomName(C::BOLD . C::GOLD . "Teleporter"));
         $player->getInventory()->setItem(2, Item::get(339)->setCustomName(C::BOLD . C::GOLD . "Info"));
+        $player->getInventory()->setItem(4, Item::get(288)->setCustomName(C::BOLD . C::GRAY . "Enable Fly Mode"));
         $player->getInventory()->setItem(6, Item::get(280)->setCustomName("§eHide players"));
+        $player->getInventory()->setItem(8, Item::get(360)->setCustomName(C::BOLD . C::BLUE . "Next Song"));
         $player->removeAllEffects();
         $player->getPlayer()->setHealth(20);
         $player->getPlayer()->setFood(20);
@@ -177,10 +182,13 @@ class ServerCore extends PluginBase implements Listener {
 
     public function teleportItems(Player $player) {
         $player->getInventory()->clearAll();
-        $player->getInventory()->setItem(3, Item::get(280)->setCustomName(C::BOLD . C::BLUE . "Light Wars"));
-        $player->getInventory()->setItem(8, Item::get(341)->setCustomName(C::BOLD . C::RED . "Bakery"));
-        $player->getInventory()->setItem(0, Item::get(267)->setCustomName(C::BOLD.C::RED."QSG"));
-        $player->getInventory()->setItem(2, Item::get(19)->setCustomName(C::BOLD.C::AQUA."LSW"));
+        $game1 = $this->config->get("Game-1-name");
+        $game2 = $this->config->get("Game-2-name");
+        $game3 = $this->config->get("Game-3-name");
+        $player->getInventory()->setItem(4, Item::get(399)->setCustomName(C::BOLD . C::BLUE . $game1));
+        $player->getInventory()->setItem(8, Item::get(355)->setCustomName(C::BOLD . C::RED . "Back"));
+        $player->getInventory()->setItem(0, Item::get(378)->setCustomName(C::BOLD . C::GOLD . $game2));
+        $player->getInventory()->setItem(2, Item::get(381)->setCustomName(C::BOLD . C::GREEN . $game3));
         $player->removeAllEffects();
         $player->getPlayer()->setHealth(20);
         $player->getPlayer()->setFood(20);
@@ -190,12 +198,14 @@ class ServerCore extends PluginBase implements Listener {
         $player = $event->getPlayer();
         $name = $player->getName();
         $spawn = $this->getServer()->getDefaultLevel()->getSafeSpawn();
-        $player->setGamemode(0);
-        $player->teleport($spawn);
+        $x = $spawn->getX() + 0.5;
+        $y = $spawn->getY() + 0.5;
+        $z = $spawn->getZ() + 0.5;
+        $player->setGamemode(2);
+        $player->teleport(new Vector3($x, $y, $z));
         $this->getMainItems($player);
-        $player->setGamemode(0);
         if ($player->isOP()) {
-            $event->setJoinMessage(C::RED . $name . C::AQUA . " has entered the game");
+            $event->setJoinMessage(C::RED . $name . C::AQUA . " has joined the game");
         } else {
             $event->setJoinMessage("");
         }
@@ -216,6 +226,8 @@ class ServerCore extends PluginBase implements Listener {
 
     public function onCommand(CommandSender $sender, Command $command, string $label, array $args) : bool {
         $name = $sender->getName();
+        $server = $this->config->get("info-server-command");
+        $ranks = $this->config->get("info-ranks-command");
         switch ($command->getName()) {
             case "heal":
                 if ($sender instanceof Player) {
@@ -384,21 +396,20 @@ class ServerCore extends PluginBase implements Listener {
                 break;
             case "info":
                 if ($sender instanceof Player) {
-                    if (!empty($args[0])) {
-                        if ($args[0] == "voter") {
-                            $sender->sendMessage($this->prefix . " §aYou can vote for us");
+                    if (!empty($args[0]) && count($args) === 1) {
+                        if ($args[0] == "ranks") {
+                            $sender->sendMessage($this->prefix . $ranks);
                             return true;
                         }
-                        if ($args[0] == "youtuber") {
-                            $sender->sendMessage($this->prefix . "§aThe YouTuber rank is available from 200 subscribers!");
+                        if ($args[0] == "server") {
+                            $sender->sendMessage($this->prefix . $server);
                             return true;
-                        }
-                        if ($args[0] == "vip") {
-                            $sender->sendMessage($this->prefix . "§aYou can buy a rank from our server store");
+                        } else {
+                            $sender->sendMessage($this->prefix. "Usage: /info <ranks|server>");
                             return true;
                         }
                     } else {
-                        $sender->sendMessage($this->prefix. "§a/info voter|youtuber|vip");
+                        $sender->sendMessage($this->prefix. "Usage: /info <ranks|server>");
                         return true;
                     }
                 } else {
@@ -448,24 +459,40 @@ class ServerCore extends PluginBase implements Listener {
         $item = $player->getInventory()->getItemInHand();
         $itemId = $item->getID();
         $block = $event->getBlock();
+        $game1 = $this->config->get("Game-1-name");
+        $game2 = $this->config->get("Game-2-name");
+        $game3 = $this->config->get("Game-3-name");
+
         if ($item->getName() == C::BOLD . C::GOLD . "Teleporter") {
             $this->teleportItems($player);
         } else if ($item->getName() == C::BOLD . C::GOLD . "Info") {
-            $player->sendMessage($this->prefix . "§ause /info voter|youtuber|vip");
-        } else if ($item->getName() == C::BOLD . C::RED . "Bakery") {
-            $this->getMainItems($player);
-        } else if ($item->getName() == C::BOLD . C::BLUE . "Light Wars") {
-            $this->getMainItems($player);
-            $x = 232;
-            $y = 4;
-            $z = 270;
+            $player->sendMessage($this->prefix . "§aUsage: /info <ranks|server>");
+        } else if ($item->getName() == C::BOLD . C::RED . "Enable Fly Mode") {
+            $player->setAllowFlight(true);
+            $player->getInventory()->remove(Item::get(288)->setCustomName(C::BOLD . C::BLUE . "Enable Fly Mode"));
+            $player->getInventory()->setItem(4, Item::get(288)->setCustomName(C::BOLD . C::BLUE . "Disable Fly Mode"));
+        } else if ($item->getName() == C::BOLD . C::BLUE . "Disable Fly Mode") {
+            $player->setAllowFlight(false);
+            $player->getInventory()->remove(Item::get(288)->setCustomName(C::BOLD . C::BLUE . "Disable Fly Mode"));
+            $player->getInventory()->setItem(4, Item::get(288)->setCustomName(C::BOLD . C::BLUE . "Enable Fly Mode"));
+        } else if ($item->getName() == C::BOLD . C::RED . "Back") {
+            $this->mainItems($player);
+        } else if ($item->getCustomName() == C::BOLD . C::GREEN . $game1) {
+            $this->mainItems($player);
+            $x = $this->config->get("Game-1-X");
+            $y = $this->config->get("Game-1-Y");
+            $z = $this->config->get("Game-1-Z");
             $player->teleport(new Vector3($x, $y, $z));
-        } else if ($item->getName() == C::BOLD.C::RED."QSG") {
-            $this->getMainItems($player);
-            $x = 259;
-            $y = 4;
-            $z = 248;
-            $player->teleport(new Vector3($x, $y, $z));
+        } else if ($item->getCustomName() == C::BOLD . C::GREEN . $game2) {
+            $this->mainItems($player);
+            $x = $this->config->get("Game-2-X");
+            $y = $this->config->get("Game-2-Y");
+            $z = $this->config->get("Game-2-Z");
+        } else if ($item->getCustomName() == C::BOLD . C::GREEN . $game3) {
+            $this->mainItems($player);
+            $x = $this->config->get("Game-3-X");
+            $y = $this->config->get("Game-3-Y");
+            $z = $this->config->get("Game-3-Z");
         } else if ($item->getCustomName() == "§ePlayer Hiding") {
             $player->getInventory()->remove(Item::get(280)->setCustomName("§ePlayers Hiding"));
             $player->getInventory()->setItem(6, Item::get(369)->setCustomName("§ePlayers Show"));
@@ -477,11 +504,13 @@ class ServerCore extends PluginBase implements Listener {
         } else if ($item->getCustomName() == "§ePlayers Show") {
             $player->getInventory()->remove(Item::get(369)->setCustomName("§ePlayers Show"));
             $player->getInventory()->setItem(6, Item::get(280)->setCustomName("§ePlayer Hiding"));
-            $player->sendMessage($this->prefix . "§aAll players are now visible again!");
+            $player->sendMessage($this->prefix . "§aAll players are now visible!");
             unset($this->hideAll[array_search($player, $this->hideAll)]);
             foreach ($this->getServer()->getOnlinePlayers() as $p2) {
                 $player->showplayer($p2);
             }
+        } else if ($item->getCustomName() == C::BOLD . C::GREEN . "Next Song") {
+            $this->music->startNewTask();
         }
     }
 
