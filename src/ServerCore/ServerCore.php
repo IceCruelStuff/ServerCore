@@ -377,6 +377,7 @@ class ServerCore extends PluginBase implements Listener {
                         }
                     } else {
                         $sender->sendMessage(TextFormat::RED . "You do not have permission to run this command");
+                    }
                 } else {
                     $sender->sendMessage(TextFormat::RED . "Please use this command in-game");
                 }
