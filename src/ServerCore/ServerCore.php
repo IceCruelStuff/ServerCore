@@ -6,6 +6,7 @@ namespace ServerCore;
 
 use pocketmine\command\CommandSender;
 use pocketmine\command\Command;
+use pocketmine\entity\Entity;
 use pocketmine\event\block\BlockBreakEvent;
 use pocketmine\event\block\BlockPlaceEvent;
 use pocketmine\event\entity\EntityTeleportEvent;
@@ -52,6 +53,8 @@ class ServerCore extends PluginBase implements Listener {
     private static $instance;
 
     private $scoreboards = [];
+
+    protected $vanish = [];
 
     public function onEnable() : void {
         $this->getServer()->getPluginManager()->registerEvents($this, $this);
@@ -217,10 +220,10 @@ class ServerCore extends PluginBase implements Listener {
             case "heal":
                 if ($sender instanceof Player) {
                     if ($sender->hasPermission("command.heal")) {
-                        $sender->sendMessage(C::DARK_PURPLE . " You have been healed");
+                        $sender->sendMessage(TextFormat::DARK_PURPLE . " You have been healed");
                         $sender->setHealth(20);
-                    } else if (!$sender->hasPermission("command.heal")) {
-                        $sender->sendMessage(C::RESET . C::RED . "You do not have permission to run this command");
+                    } else {
+                        $sender->sendMessage(TextFormat::RESET . TextFormat::RED . "You do not have permission to run this command");
                     }
                 } else {
                     $sender->sendMessage("Please use this command in-game");
@@ -231,16 +234,16 @@ class ServerCore extends PluginBase implements Listener {
                 if ($sender instanceof Player) {
                     if ($sender->hasPermission("command.feed")) {
                         if ($sender->getFood() == 20) {
-                            $sender->sendMessage("You already have maxed food");
+                            $sender->sendMessage(TextFormat::RED . "You already have maxed food");
                         } else {
                             $sender->setFood(20);
-                            $sender->sendMessage("You have been fed");
+                            $sender->sendMessage(TextFormat::GREEN . "You have been fed");
                         }
                     } else {
-                        $sender->sendMessage("You do not have permission to run this command");
+                        $sender->sendMessage(TextFormat::RED . "You do not have permission to run this command");
                     }
                 } else {
-                    $sender->sendMessage("Please use this command in-game");
+                    $sender->sendMessage(TextFormat::RED . "Please use this command in-game");
                 }
                 break;
             case "warn":
@@ -312,10 +315,10 @@ class ServerCore extends PluginBase implements Listener {
                     if ($sender instanceof Player) {
                         $sender->sendMessage("Ping: " . $sender->getPing() . "ms");
                     } else {
-                        $sender->sendMessage("Please use this command in-game");
+                        $sender->sendMessage(TextFormat::RED . "Please use this command in-game");
                     }
                 } else {
-                    $sender->sendMessage("You do not have permission to run this command");
+                    $sender->sendMessage(TextFormat::RED . "You do not have permission to run this command");
                 }
                 break;
             case "fly":
@@ -325,34 +328,80 @@ class ServerCore extends PluginBase implements Listener {
                         if ($sender->getAllowFlight()) {
                             $sender->setFlying(false);
                             $sender->setAllowFlight(false);
-                            $sender->sendMessage("You have disabled flight mode");
+                            $sender->sendMessage(TextFormat::RED . "You have disabled flight mode");
                         } else {
                             $sender->setAllowFlight(true);
-                            $sender->sendMessage("You have enabled flight mode");
+                            $sender->sendMessage(TextFormat::GREEN . "You have enabled flight mode");
                         }
                     } else {
-                        $sender->sendMessage("Please use this command in-game");
+                        $sender->sendMessage(TextFormat::RED . "Please use this command in-game");
                     }
                 } else {
-                    $sender->sendMessage("You do not have permission to run this command");
+                    $sender->sendMessage(TextFormat::RED . "You do not have permission to run this command");
+                }
+                break;
+            case "vanish":
+            case "v":
+                if ($sender instanceof Player) {
+                    if ($sender->hasPermission("command.vanish")) {
+                        if (empty($args[0])) {
+                            if (!isset($this->vanish[$sender->getName()])) {
+                                $this->vanish[$sender->getName()] = true;
+                                $sender->setDataFlag(Entity::DATA_FLAGS, Entity::DATA_FLAG_INVISIBLE, true);
+                                $sender->setNameTagVisible(false);
+                                $sender->sendMessage(TextFormat::GREEN . "You are now invisible");
+                            } else if (isset($this->vanish[$sender->getName()])) {
+                                unset($this->vanish[$sender->getName()]);
+                                $sender->setDataFlag(Entity::DATA_FLAGS, Entity::DATA_FLAG_INVISIBLE, false);
+                                $sender->setNameTagVisible(true);
+                                $sender->sendMessage(TextFormat::GREEN . "You are no longer invisible");
+                            }
+                        }
+                        if ($this->getServer()->getPlayer($args[0])) {
+                            $player = $this->getServer()->getPlayer($args[0]);
+                            if (!isset($this->vanish[$player->getName()])) {
+                                $this->vanish[$player->getName()] = true;
+                                $player->setDataFlag(Entity::DATA_FLAGS, Entity::DATA_FLAG_INVISIBLE, true);
+                                $player->setNameTagVisible(false);
+                                $player->sendMessage(TextFormat::GREEN . "You are now invisible");
+                                $sender->sendMessage(TextFormat::GREEN . "You have vanished " . TextFormat.AQUA . $player->getName());
+                            } else if (isset($this->vanish[$player->getName()])) {
+                                unset($this->vanish[$player->getName()]);
+                                $player->setDataFlag(Entity::DATA_FLAGS, Entity::DATA_FLAG_INVISIBLE, false);
+                                $player->setNameTagVisible(true);
+                                $player->sendMessage(TextFormat::GREEN . "You are no longer invisible");
+                                $sender->sendMessage(TextFormat::GREEN . "You have made " . TextFormat::AQUA . $player->getName() . TextFormat::GREEN . " visible");
+                            }
+                        } else {
+                            $sender->sendMessage(TextFormat::RED . "Player not found");
+                        }
+                    } else {
+                        $sender->sendMessage(TextFormat::RED . "You do not have permission to run this command");
+                } else {
+                    $sender->sendMessage(TextFormat::RED . "Please use this command in-game");
                 }
                 break;
             case "info":
-                if (!empty($args[0])) {
-                    if ($args[0] == "voter") {
-                        $sender->sendMessage($this->prefix . " §aYou can vote for us");
-                        return true;
-                    }
-                    if ($args[0] == "youtuber") {
-                        $sender->sendMessage($this->prefix . "§aThe YouTuber rank is available from 200 subscribers!");
-                        return true;
-                    }
-                    if ($args[0] == "vip") {
-                        $sender->sendMessage($this->prefix . "§aYou can buy a rank from our server store");
+                if ($sender instanceof Player) {
+                    if (!empty($args[0])) {
+                        if ($args[0] == "voter") {
+                            $sender->sendMessage($this->prefix . " §aYou can vote for us");
+                            return true;
+                        }
+                        if ($args[0] == "youtuber") {
+                            $sender->sendMessage($this->prefix . "§aThe YouTuber rank is available from 200 subscribers!");
+                            return true;
+                        }
+                        if ($args[0] == "vip") {
+                            $sender->sendMessage($this->prefix . "§aYou can buy a rank from our server store");
+                            return true;
+                        }
+                    } else {
+                        $sender->sendMessage($this->prefix. "§a/info voter|youtuber|vip");
                         return true;
                     }
                 } else {
-                    $sender->sendMessage($this->prefix. "§a/info voter|youtuber|vip");
+                    $sender->sendMessage(TextFormat::RED . "Please use this command in-game");
                     return true;
                 }
             case "clear":
@@ -361,12 +410,12 @@ class ServerCore extends PluginBase implements Listener {
                     if ($sender->hasPermission("command.clear")) {
                         $sender->getArmorInventory()->clearAll();
                         $sender->getInventory()->clearAll();
-                        $sender->sendMessage("Your inventory has been cleared");
+                        $sender->sendMessage(TextFormat::RED . "Your inventory has been cleared");
                     } else {
-                        $sender->sendMessage("You do not have permission to run this command");
+                        $sender->sendMessage(TextFormat::RED . "You do not have permission to run this command");
                     }
                 } else {
-                    $sender->sendMessage("Please use this command in-game");
+                    $sender->sendMessage(TextFormat::RED . "Please use this command in-game");
                 }
                 break;
             case "lobby":
@@ -381,11 +430,11 @@ class ServerCore extends PluginBase implements Listener {
                         $sender->setFood(20);
                         return true;
                     } else {
-                        $sender->sendMessage("Please use this command in-game");
+                        $sender->sendMessage(TextFormat::RED . "Please use this command in-game");
                         return true;
                     }
                 } else {
-                    $sender->sendMessage("You do not have permission to run this command");
+                    $sender->sendMessage(TextFormat::RED . "You do not have permission to run this command");
                     return true;
                 }
         }
