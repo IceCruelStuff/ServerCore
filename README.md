@@ -6,7 +6,7 @@ An advanced and powerful server core for PocketMine-MP.
 
 # Attention
 
-Do not use on production until there is a stable release.
+Do not use this plugin. It is currently still in development.
 
 | ![Download icon](https://storage.googleapis.com/material-icons/external-assets/v4/icons/svg/ic_file_download_black_18px.svg) Latest Build | License |
 | :---: | :---: |
