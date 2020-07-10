@@ -17,6 +17,16 @@ commands:
     permission: command.warn
     usage: "/warn <user> <string:message>"
 
+  vanish:
+    description: Makes you invisible
+    permission: command.vanish
+    usage: "/vanish <player>"
+
+  v:
+    description: Makes you invisible
+    permission: command.vanish
+    usage: "/v <player>"
+
   forgive:
     description: Forgives a player
     permission: command.forgive
@@ -70,6 +80,10 @@ commands:
 permissions:
   command.warn:
     description: Allows player to use /warn
+    default: op
+
+  command.vanish:
+    description: Allows player to use /vanish
     default: op
 
   command.forgive:
