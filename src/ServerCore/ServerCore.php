@@ -476,20 +476,20 @@ class ServerCore extends PluginBase implements Listener {
             $player->getInventory()->remove(Item::get(288)->setCustomName(C::BOLD . C::BLUE . "Disable Fly Mode"));
             $player->getInventory()->setItem(4, Item::get(288)->setCustomName(C::BOLD . C::BLUE . "Enable Fly Mode"));
         } else if ($item->getName() == C::BOLD . C::RED . "Back") {
-            $this->mainItems($player);
+            $this->getMainItems($player);
         } else if ($item->getCustomName() == C::BOLD . C::GREEN . $game1) {
-            $this->mainItems($player);
+            $this->getMainItems($player);
             $x = $this->config->get("Game-1-X");
             $y = $this->config->get("Game-1-Y");
             $z = $this->config->get("Game-1-Z");
             $player->teleport(new Vector3($x, $y, $z));
         } else if ($item->getCustomName() == C::BOLD . C::GREEN . $game2) {
-            $this->mainItems($player);
+            $this->getMainItems($player);
             $x = $this->config->get("Game-2-X");
             $y = $this->config->get("Game-2-Y");
             $z = $this->config->get("Game-2-Z");
         } else if ($item->getCustomName() == C::BOLD . C::GREEN . $game3) {
-            $this->mainItems($player);
+            $this->getMainItems($player);
             $x = $this->config->get("Game-3-X");
             $y = $this->config->get("Game-3-Y");
             $z = $this->config->get("Game-3-Z");
