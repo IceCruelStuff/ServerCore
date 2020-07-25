@@ -94,11 +94,11 @@ class ServerCore extends PluginBase implements Listener {
 
             $this->music = $this->getServer()->getPluginManager()->getPlugin("ZMusicBox");
 
-            $this->faction = $this->getServer()-getPluginManager()->getPlugin("FactionsPro")->getPlayerFaction($player->getName());
-            $this->group = $this->getServer()-getPluginManager()->getPlugin("PurePerms")->getUserDataMgr()->getGroup($player)->getName();
-            $this->money = $this->getServer()-getPluginManager()->getPlugin("EconomyAPI")->myMoney($player->getName());
-            $this->kills = $this->getServer()-getPluginManager()->getPlugin("KillChat")->getKills($name);
-            $this->deaths = $this->getServer()-getPluginManager()->getPlugin("KillChat")->getDeaths($name);
+            $this->faction = $this->getServer()->getPluginManager()->getPlugin("FactionsPro")->getPlayerFaction($player->getName());
+            $this->group = $this->getServer()->getPluginManager()->getPlugin("PurePerms")->getUserDataMgr()->getGroup($player)->getName();
+            $this->money = $this->getServer()->getPluginManager()->getPlugin("EconomyAPI")->myMoney($player->getName());
+            $this->kills = $this->getServer()->getPluginManager()->getPlugin("KillChat")->getKills($name);
+            $this->deaths = $this->getServer()->getPluginManager()->getPlugin("KillChat")->getDeaths($name);
         }
         $this->config->save();
         $this->warnedPlayers->save();
@@ -376,7 +376,7 @@ class ServerCore extends PluginBase implements Listener {
                                 $player->setDataFlag(Entity::DATA_FLAGS, Entity::DATA_FLAG_INVISIBLE, true);
                                 $player->setNameTagVisible(false);
                                 $player->sendMessage(TextFormat::GREEN . "You are now invisible");
-                                $sender->sendMessage(TextFormat::GREEN . "You have vanished " . TextFormat.AQUA . $player->getName());
+                                $sender->sendMessage(TextFormat::GREEN . "You have vanished " . TextFormat::AQUA . $player->getName());
                             } else if (isset($this->vanish[$player->getName()])) {
                                 unset($this->vanish[$player->getName()]);
                                 $player->setDataFlag(Entity::DATA_FLAGS, Entity::DATA_FLAG_INVISIBLE, false);
