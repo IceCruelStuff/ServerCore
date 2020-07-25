@@ -37,6 +37,7 @@ use pocketmine\utils\TextFormat;
 use pocketmine\Player;
 use pocketmine\Server;
 use ServerCore\task\ScoreboardTask;
+use onebone\economyapi\EconomyAPI;
 
 class ServerCore extends PluginBase implements Listener {
 
@@ -96,7 +97,7 @@ class ServerCore extends PluginBase implements Listener {
 
             $this->faction = $this->getServer()->getPluginManager()->getPlugin("FactionsPro")->getPlayerFaction($player->getName());
             $this->group = $this->getServer()->getPluginManager()->getPlugin("PurePerms")->getUserDataMgr()->getGroup($player)->getName();
-            $this->money = $this->getServer()->getPluginManager()->getPlugin("EconomyAPI")->myMoney($player->getName());
+            $this->money = EconomyAPI::getInstance()->myMoney($player);
             $this->kills = $this->getServer()->getPluginManager()->getPlugin("KillChat")->getKills($name);
             $this->deaths = $this->getServer()->getPluginManager()->getPlugin("KillChat")->getDeaths($name);
         }
