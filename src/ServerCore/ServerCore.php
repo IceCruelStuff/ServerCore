@@ -121,6 +121,7 @@ class ServerCore extends PluginBase implements Listener {
         if (isset($this->scoreboards[$player->getName()])) {
             $this->remove($player);
         }
+
         $pk = new SetDisplayObjectivePacket();
         $pk->displaySlot = "sidebar";
         $pk->objectiveName = $objectiveName;
@@ -148,6 +149,7 @@ class ServerCore extends PluginBase implements Listener {
             $this->getLogger()->error("Score must be between the value of 1-15. $score out of range");
             return;
         }
+
         $objectiveName = $this->getObjectiveName($player);
         $entry = new ScorePacketEntry();
         $entry->objectiveName = $objectiveName;
