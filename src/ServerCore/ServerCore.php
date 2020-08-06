@@ -72,7 +72,9 @@ class ServerCore extends PluginBase implements Listener {
         $this->config = new Config($this->getDataFolder() . 'config.yml', Config::YAML, array(
             "disable-lava" => false,
             "disable-tnt" => false,
-            "disable-bucket" => false
+            "disable-bucket" => false,
+            "enable-music" => false,
+            "enable-kill-chat" => false
         ));
 
         $this->getScheduler()->scheduleRepeatingTask(new ScoreboardTask($this, 0), (int)$this->getConfig()->get("update-interval"));
@@ -89,17 +91,35 @@ class ServerCore extends PluginBase implements Listener {
             $this->config->set("disable-bucket", false);
         }
 
+        if (!$this->config->get("enable-music")) {
+            $this->config->set("enable-music", false);
+        }
+
+        if (!$this->config->get("enable-kill-chat")) {
+            $this->config->set("enable-kill-chat", false);
+        }
+
         foreach ($this->getServer()->getOnlinePlayers() as $p) {
             $player = $p->getPlayer();
             $name = $player->getName();
 
-            $this->music = $this->getServer()->getPluginManager()->getPlugin("ZMusicBox");
+            if ($this->config->get("enable-music") == true) {
+                $this->music = $this->getServer()->getPluginManager()->getPlugin("ZMusicBox");
+            } else {
+                $this->music = null;
+            }
 
             $this->faction = $this->getServer()->getPluginManager()->getPlugin("FactionsPro")->getPlayerFaction($player->getName());
             $this->group = $this->getServer()->getPluginManager()->getPlugin("PurePerms")->getUserDataMgr()->getGroup($player)->getName();
             $this->money = EconomyAPI::getInstance()->myMoney($player);
-            $this->kills = $this->getServer()->getPluginManager()->getPlugin("KillChat")->getKills($name);
-            $this->deaths = $this->getServer()->getPluginManager()->getPlugin("KillChat")->getDeaths($name);
+
+            if ($this->config->get("enable-kill-chat" == true)) {
+                $this->kills = $this->getServer()->getPluginManager()->getPlugin("KillChat")->getKills($name);
+                $this->deaths = $this->getServer()->getPluginManager()->getPlugin("KillChat")->getDeaths($name);
+            } else {
+                $this->kills = null;
+                $this->deaths = null;
+            }
         }
         $this->config->save();
         $this->warnedPlayers->save();
