@@ -193,7 +193,7 @@ class ServerCore extends PluginBase implements Listener {
         $player->getInventory()->setItem(0, Item::get(345)->setCustomName(C::BOLD . C::GOLD . "Teleporter"));
         $player->getInventory()->setItem(2, Item::get(339)->setCustomName(C::BOLD . C::GOLD . "Info"));
         $player->getInventory()->setItem(4, Item::get(288)->setCustomName(C::BOLD . C::GRAY . "Enable Fly Mode"));
-        $player->getInventory()->setItem(6, Item::get(280)->setCustomName("§eHide players"));
+        $player->getInventory()->setItem(6, Item::get(280)->setCustomName(C::BOLD . C::YELLOW . "§eHide players"));
         $player->getInventory()->setItem(8, Item::get(360)->setCustomName(C::BOLD . C::BLUE . "Next Song"));
         $player->removeAllEffects();
         $player->getPlayer()->setHealth(20);
