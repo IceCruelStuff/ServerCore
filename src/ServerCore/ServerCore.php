@@ -36,6 +36,7 @@ use pocketmine\utils\TextFormat as C;
 use pocketmine\utils\TextFormat;
 use pocketmine\Player;
 use pocketmine\Server;
+use ServerCore\commands\FlyCommand;
 use ServerCore\task\ScoreboardTask;
 use onebone\economyapi\EconomyAPI;
 
@@ -60,6 +61,7 @@ class ServerCore extends PluginBase implements Listener {
 
     public function onEnable() : void {
         $this->getServer()->getPluginManager()->registerEvents($this, $this);
+        $this->getServer()->getCommandMap()->register("fly", new FlyCommand($this))
 
         @mkdir($this->getDataFolder());
         $this->saveResource("warnedPlayers.txt");
