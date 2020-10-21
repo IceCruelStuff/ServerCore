@@ -8,7 +8,7 @@ use pocketmine\utils\TextFormat;
 use pocketmine\Player;
 use ServerCore\ServerCore as Main;
 
-class Fly extends Command implements PluginIdentifiableCommand {
+class FlyCommand extends Command implements PluginIdentifiableCommand {
 
     private $plugin;
 
