@@ -23,6 +23,8 @@ class FlyCommand extends Command implements PluginIdentifiableCommand {
     }
 
     public function execute(CommandSender $sender, string $label, array $args) {
+        $aliasesList = ["flight"];
+        $this->setAliases($aliasesList)
         if (!$this->testPermission($sender)) {
             return;
         }
