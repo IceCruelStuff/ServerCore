@@ -111,9 +111,24 @@ class ServerCore extends PluginBase implements Listener {
                 $this->music = null;
             }
 
-            $this->faction = $this->getServer()->getPluginManager()->getPlugin("FactionsPro")->getPlayerFaction($player->getName());
-            $this->group = $this->getServer()->getPluginManager()->getPlugin("PurePerms")->getUserDataMgr()->getGroup($player)->getName();
-            $this->money = EconomyAPI::getInstance()->myMoney($player);
+            if ($this->getServer()->getPluginManager()->getPlugin("FactionsPro")) {
+                $this->faction = $this->getServer()->getPluginManager()->getPlugin("FactionsPro")->getPlayerFaction($player->getName());
+            } else {
+                $this->getLogger()->warn(TextFormat::RED . 'FactionsPro plugin is not installed. Some features may be disabled.');
+            }
+
+            if ($this->getServer()->getPluginManager()->getPlugin("PurePerms")) {
+                $this->group = $this->getServer()->getPluginManager()->getPlugin("PurePerms")->getUserDataMgr()->getGroup($player)->getName();
+            } else {
+                $this->getLogger()->warn(TextFormat::RED . 'PurePerms plugin is not installed. Some features may be disabled.');
+            }
+
+            if ($this->getServer()->getPluginManager()->getPlugin("EconomyAPI")) {
+                $this->money = EconomyAPI::getInstance()->myMoney($player);
+                //$this->money = $this->getServer()->getPluginManager()->getPlugin("EconomyAPI")->myMoney($player);
+            } else {
+                $this->getLogger()->warn(TextFormat::RED . 'EconomyAPI plugin is not installed. Some features may be disabled.');
+            }
 
             if ($this->config->get("enable-kill-chat" == true)) {
                 $this->kills = $this->getServer()->getPluginManager()->getPlugin("KillChat")->getKills($name);
