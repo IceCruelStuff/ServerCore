@@ -113,7 +113,7 @@ class ServerCore extends PluginBase implements Listener {
             $this->group = $this->getServer()->getPluginManager()->getPlugin("PurePerms")->getUserDataMgr()->getGroup($player)->getName();
             $this->money = EconomyAPI::getInstance()->myMoney($player);
 
-            if ($this->config->get("enable-kill-chat" == true)) {
+            if ($this->config->get("enable-kill-chat") == true) {
                 $this->kills = $this->getServer()->getPluginManager()->getPlugin("KillChat")->getKills($name);
                 $this->deaths = $this->getServer()->getPluginManager()->getPlugin("KillChat")->getDeaths($name);
             } else {
