@@ -6,8 +6,8 @@ load: STARTUP
 author: IceCruelStuff
 description: An advanced core plugin
 website: https://github.com/IceCruelStuff/ServerCore
-depend: [PurePerms, EconomyAPI]
-softdepend: [FactionsPro, ZMusicBox, KillChat]
+softdepend: [FactionsPro, ZMusicBox, KillChat, PurePerms, EconomyAPI]
+
 commands:
   heal:
     description: Heal yourself
