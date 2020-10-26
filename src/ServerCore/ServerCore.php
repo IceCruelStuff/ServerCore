@@ -130,7 +130,7 @@ class ServerCore extends PluginBase implements Listener {
                 $this->getLogger()->warn(TextFormat::RED . 'EconomyAPI plugin is not installed. Some features may be disabled.');
             }
 
-            if ($this->config->get("enable-kill-chat" == true)) {
+            if ($this->config->get("enable-kill-chat") == true) {
                 $this->kills = $this->getServer()->getPluginManager()->getPlugin("KillChat")->getKills($name);
                 $this->deaths = $this->getServer()->getPluginManager()->getPlugin("KillChat")->getDeaths($name);
             } else {
