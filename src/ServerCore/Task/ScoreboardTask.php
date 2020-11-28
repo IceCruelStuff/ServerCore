@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace ServerCore\task;
+namespace ServerCore\Task;
 
 use pocketmine\scheduler\Task;
 use ServerCore\ServerCore;
