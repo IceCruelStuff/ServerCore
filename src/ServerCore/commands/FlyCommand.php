@@ -14,7 +14,12 @@ class FlyCommand extends Command implements PluginIdentifiableCommand {
 
     public function __construct(Main $plugin) {
         $this->plugin = $plugin;
-        parent::__construct("fly", "Allows player to fly", "/fly");
+        parent::__construct(
+            "fly",
+            "Allows player to fly",
+            "/fly",
+            ["flight"]
+        );
         $this->setPermission("command.fly");
     }
 
@@ -23,8 +28,6 @@ class FlyCommand extends Command implements PluginIdentifiableCommand {
     }
 
     public function execute(CommandSender $sender, string $label, array $args) {
-        $aliasesList = ["flight"];
-        $this->setAliases($aliasesList)
         if (!$this->testPermission($sender)) {
             return;
         }
