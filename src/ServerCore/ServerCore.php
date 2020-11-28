@@ -36,8 +36,8 @@ use pocketmine\utils\TextFormat as C;
 use pocketmine\utils\TextFormat;
 use pocketmine\Player;
 use pocketmine\Server;
-use ServerCore\commands\FlyCommand;
-use ServerCore\task\ScoreboardTask;
+use ServerCore\Command\FlyCommand;
+use ServerCore\Task\ScoreboardTask;
 use onebone\economyapi\EconomyAPI;
 
 class ServerCore extends PluginBase implements Listener {
