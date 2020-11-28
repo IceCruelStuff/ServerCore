@@ -71,15 +71,15 @@ class ServerCore extends PluginBase implements Listener {
             $this->saveResource("config.yml");
         }
 
-        $this->config = new Config($this->getDataFolder() . 'config.yml', Config::YAML, array(
+        $this->config = new Config($this->getDataFolder() . 'config.yml', Config::YAML, [
             "disable-lava" => false,
             "disable-tnt" => false,
             "disable-bucket" => false,
             "enable-music" => false,
             "enable-kill-chat" => false
-        ));
+        ]);
 
-        $this->getScheduler()->scheduleRepeatingTask(new ScoreboardTask($this, 0), (int)$this->getConfig()->get("update-interval"));
+        $this->getScheduler()->scheduleRepeatingTask(new ScoreboardTask($this, 0), (int) $this->getConfig()->get("update-interval"));
 
         if (!$this->config->get("disable-lava")) {
             $this->config->set("disable-lava", false);
