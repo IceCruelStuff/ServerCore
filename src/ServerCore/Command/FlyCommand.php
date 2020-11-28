@@ -1,5 +1,7 @@
 <?php
 
+namespace ServerCore\Command;
+
 use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
 use pocketmine\command\PluginIdentifiableCommand;
