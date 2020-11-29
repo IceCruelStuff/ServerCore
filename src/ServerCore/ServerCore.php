@@ -37,6 +37,7 @@ use pocketmine\utils\TextFormat;
 use pocketmine\Player;
 use pocketmine\Server;
 use ServerCore\Command\FlyCommand;
+use ServerCore\Command\HealCommand;
 use ServerCore\Task\ScoreboardTask;
 use onebone\economyapi\EconomyAPI;
 
@@ -61,7 +62,8 @@ class ServerCore extends PluginBase implements Listener {
 
     public function onEnable() : void {
         $this->getServer()->getPluginManager()->registerEvents($this, $this);
-        $this->getServer()->getCommandMap()->register("fly", new FlyCommand($this))
+        $this->getServer()->getCommandMap()->register("fly", new FlyCommand($this));
+        $this->getServer()->getCommandMap()->register("heal", new HealCommand($this));
 
         @mkdir($this->getDataFolder());
         $this->saveResource("warnedPlayers.txt");
