@@ -36,6 +36,7 @@ use pocketmine\utils\TextFormat as C;
 use pocketmine\utils\TextFormat;
 use pocketmine\Player;
 use pocketmine\Server;
+use ServerCore\Command\FeedCommand;
 use ServerCore\Command\FlyCommand;
 use ServerCore\Command\HealCommand;
 use ServerCore\Task\ScoreboardTask;
@@ -62,6 +63,7 @@ class ServerCore extends PluginBase implements Listener {
 
     public function onEnable() : void {
         $this->getServer()->getPluginManager()->registerEvents($this, $this);
+        $this->getServer()->getCommandMap()->register("feed", new FeedCommand($this));
         $this->getServer()->getCommandMap()->register("fly", new FlyCommand($this));
         $this->getServer()->getCommandMap()->register("heal", new HealCommand($this));
 
