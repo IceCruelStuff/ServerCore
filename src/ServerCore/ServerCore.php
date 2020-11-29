@@ -40,6 +40,7 @@ use ServerCore\Command\FeedCommand;
 use ServerCore\Command\FlyCommand;
 use ServerCore\Command\ForgiveCommand;
 use ServerCore\Command\HealCommand;
+use ServerCore\Command\PingCommand;
 use ServerCore\Command\WarnCommand;
 use ServerCore\Task\ScoreboardTask;
 use onebone\economyapi\EconomyAPI;
@@ -69,6 +70,7 @@ class ServerCore extends PluginBase implements Listener {
         $this->getServer()->getCommandMap()->register("fly", new FlyCommand($this));
         $this->getServer()->getCommandMap()->register("forgive", new ForgiveCommand($this));
         $this->getServer()->getCommandMap()->register("heal", new HealCommand($this));
+        $this->getServer()->getCommandMap()->register("ping", new PingCommand($this));
         $this->getServer()->getCommandMap()->register("warn", new WarnCommand($this));
 
         @mkdir($this->getDataFolder());
