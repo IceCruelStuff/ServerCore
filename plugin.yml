@@ -9,11 +9,6 @@ website: https://github.com/IceCruelStuff/ServerCore
 softdepend: [FactionsPro, ZMusicBox, KillChat, PurePerms, EconomyAPI]
 
 commands:
-  heal:
-    description: Heal yourself
-    permission: command.heal
-    usage: "/heal"
-
   warn:
     description: Warns a player
     permission: command.warn
@@ -58,16 +53,6 @@ commands:
     description: Teleports player to hub/lobby
     permission: command.hub
     usage: "/lobby"
-
-  feed:
-    description: Feeds player
-    permission: command.feed
-    usage: "/feed"
-
-  eat:
-    description: Feeds player
-    permission: command.feed
-    usage: "/eat"
 
 permissions:
   command.warn:
