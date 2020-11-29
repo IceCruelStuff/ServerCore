@@ -42,9 +42,11 @@ class FlyCommand extends Command implements PluginIdentifiableCommand {
                         $player->setFlying(false);
                         $player->setAllowFlight(false);
                         $player->sendMessage(TextFormat::RED . 'You no longer have flight mode');
+                        $sender->sendMessage(TextFormat::GREEN . 'You have disabled flight mode for ' . $player->getName());
                     } else {
                         $player->setAllowFlight(true);
                         $player->sendMessage(TextFormat::GREEN . 'You now have flight mode');
+                        $sender->sendMessage(TextFormat::GREEN . 'You have enabled flight mode for ' . $player->getName());
                     }
                 } else {
                     $sender->sendMessage(TextFormat::RED . 'Player not found');
@@ -68,9 +70,11 @@ class FlyCommand extends Command implements PluginIdentifiableCommand {
                         $player->setFlying(false);
                         $player->setAllowFlight(false);
                         $player->sendMessage(TextFormat::RED . 'You no longer have flight mode');
+                        $sender->sendMessage(TextFormat::GREEN . 'You have disabled flight mode for ' . $player->getName());
                     } else {
                         $player->setAllowFlight(true);
                         $player->sendMessage(TextFormat::GREEN . 'You now have flight mode');
+                        $sender->sendMessage(TextFormat::GREEN . 'You have enabled flight mode for ' . $player->getName());
                     }
                 } else {
                     $sender->sendMessage(TextFormat::RED . 'Player not found');
