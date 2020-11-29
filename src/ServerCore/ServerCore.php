@@ -38,6 +38,7 @@ use pocketmine\Player;
 use pocketmine\Server;
 use ServerCore\Command\FeedCommand;
 use ServerCore\Command\FlyCommand;
+use ServerCore\Command\ForgiveCommand;
 use ServerCore\Command\HealCommand;
 use ServerCore\Command\WarnCommand;
 use ServerCore\Task\ScoreboardTask;
@@ -66,6 +67,7 @@ class ServerCore extends PluginBase implements Listener {
         $this->getServer()->getPluginManager()->registerEvents($this, $this);
         $this->getServer()->getCommandMap()->register("feed", new FeedCommand($this));
         $this->getServer()->getCommandMap()->register("fly", new FlyCommand($this));
+        $this->getServer()->getCommandMap()->register("forgive", new ForgiveCommand($this));
         $this->getServer()->getCommandMap()->register("heal", new HealCommand($this));
         $this->getServer()->getCommandMap()->register("warn", new WarnCommand($this));
 
