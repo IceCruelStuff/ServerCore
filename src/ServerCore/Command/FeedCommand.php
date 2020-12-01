@@ -53,7 +53,7 @@ class FeedCommand extends Command implements PluginIdentifiableCommand {
                     $sender->sendMessage(TextFormat::RED . "You are already at max food");
                 } else {
                     $sender->setFood($sender->getMaxFood()); // max value
-                    $sender->sendMessage(TextFormat::GREEn . "You have been fed");
+                    $sender->sendMessage(TextFormat::GREEN . "You have been fed");
                 }
             }
         } else {
