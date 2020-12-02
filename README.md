@@ -1,5 +1,9 @@
 # ServerCore
 
+| ![Download icon](https://storage.googleapis.com/material-icons/external-assets/v4/icons/svg/ic_file_download_black_18px.svg) Latest Build | License |
+| :---: | :---: |
+| [![Download](https://img.shields.io/badge/download-latest-blue.svg)](https://github.com/IceCruelStuff/ServerCore/releases/latest/download/ServerCore.phar) | [![License](https://img.shields.io/badge/license-Apache-blue.svg)](https://github.com/IceCruelStuff/ServerCore/blob/master/LICENSE) |
+
 [![Poggit](https://poggit.pmmp.io/ci.shield/IceCruelStuff/ServerCore/~)](https://poggit.pmmp.io/ci/IceCruelStuff/ServerCore/~)
 
 An advanced server core for PocketMine-MP.
@@ -8,11 +12,7 @@ An advanced server core for PocketMine-MP.
 
 Do not use this plugin. It is currently still in development.
 
-| ![Download icon](https://storage.googleapis.com/material-icons/external-assets/v4/icons/svg/ic_file_download_black_18px.svg) Latest Build | License |
-| :---: | :---: |
-| [![Download](https://img.shields.io/badge/download-latest-blue.svg)](https://github.com/IceCruelStuff/ServerCore/releases/latest/download/ServerCore.phar) | [![License](https://img.shields.io/badge/license-Apache-blue.svg)](https://github.com/IceCruelStuff/ServerCore/blob/master/LICENSE) |
-
-```license
+```
 Copyright 2020 IceCruelStuff
 
 Licensed under the Apache License, Version 2.0 (the "License");
