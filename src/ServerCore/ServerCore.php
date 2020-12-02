@@ -109,13 +109,16 @@ class ServerCore extends PluginBase implements Listener {
                 $this->music = null;
             }
 
-            $this->faction = $this->getServer()->getPluginManager()->getPlugin("FactionsPro")->getPlayerFaction($player->getName());
-            $this->group = $this->getServer()->getPluginManager()->getPlugin("PurePerms")->getUserDataMgr()->getGroup($player)->getName();
+            $factionsPro = $this->getServer()->getPluginManager()->getPlugin("FactionsPro");
+            $this->faction = $factionsPro->getPlayerFaction($player->getName());
+            $purePerms = $this->getServer()->getPluginManager()->getPlugin("PurePerms");
+            $this->group = $purePerms->getUserDataMgr()->getGroup($player)->getName();
             $this->money = EconomyAPI::getInstance()->myMoney($player);
 
-            if ($this->config->get("enable-kill-chat") == true) {
-                $this->kills = $this->getServer()->getPluginManager()->getPlugin("KillChat")->getKills($name);
-                $this->deaths = $this->getServer()->getPluginManager()->getPlugin("KillChat")->getDeaths($name);
+            if ($this->getServer()->getPluginManager()->getPlugin("KillChat") !== null) {
+                $killChat = $this->getServer()->getPluginManager()->getPlugin("KillChat");
+                $this->kills = $killChat->getKills($name);
+                $this->deaths = $killChat->getDeaths($name);
             } else {
                 $this->kills = null;
                 $this->deaths = null;
