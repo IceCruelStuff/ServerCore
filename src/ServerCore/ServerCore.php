@@ -112,7 +112,8 @@ class ServerCore extends PluginBase implements Listener {
             $factionsPro = $this->getServer()->getPluginManager()->getPlugin("FactionsPro");
             $this->faction = $factionsPro->getPlayerFaction($player->getName());
             $purePerms = $this->getServer()->getPluginManager()->getPlugin("PurePerms");
-            $this->group = $purePerms->getUserDataMgr()->getGroup($player)->getName();
+            $group = $purePerms->getUserDataMgr()->getGroup($player)->getName();
+            $this->group = $group;
             $this->money = EconomyAPI::getInstance()->myMoney($player);
 
             if ($this->getServer()->getPluginManager()->getPlugin("KillChat") !== null) {
