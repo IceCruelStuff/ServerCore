@@ -65,6 +65,7 @@ class ServerCore extends PluginBase implements Listener {
     protected $vanish = [];
 
     public function onEnable() : void {
+        self::$instance = $this;
         $this->getServer()->getPluginManager()->registerEvents($this, $this);
         $this->getServer()->getCommandMap()->register("feed", new FeedCommand($this));
         $this->getServer()->getCommandMap()->register("fly", new FlyCommand($this));
@@ -158,6 +159,14 @@ class ServerCore extends PluginBase implements Listener {
 
     public function onLoad() : void {
         self::$instance = $this;
+    }
+
+    public function getMoney() : ?EconomyAPI {
+        return $this->money;
+    }
+
+    public function getGroup() {
+        return $this->group;
     }
 
     public static function getInstance() : ServerCore {
