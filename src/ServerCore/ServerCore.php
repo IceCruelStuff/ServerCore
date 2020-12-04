@@ -100,7 +100,7 @@ class ServerCore extends PluginBase implements Listener {
         }
 
         foreach ($this->getServer()->getOnlinePlayers() as $player) {
-            $player = $p->getPlayer();
+            // $player = $p->getPlayer();
             $name = $player->getName();
 
             if ($this->config->get("enable-music") == true) {
@@ -109,7 +109,7 @@ class ServerCore extends PluginBase implements Listener {
                 $this->music = null;
             }
 
-            $this->faction = $this->getServer()->getPluginManager()->getPlugin("FactionsPro")->getPlayerFaction($player->getName());
+            $this->faction = $this->getServer()->getPluginManager()->getPlugin("FactionsPro")->getPlayerFaction($player);
             $this->group = $this->getServer()->getPluginManager()->getPlugin("PurePerms")->getUserDataMgr()->getGroup($player)->getName();
             $this->money = EconomyAPI::getInstance()->myMoney($player);
 
