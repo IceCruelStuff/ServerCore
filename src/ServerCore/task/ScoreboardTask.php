@@ -37,8 +37,8 @@ class ScoreboardTask extends Task {
             $x = round($player->getX(), 0);
             $y = round($player->getY(), 0);
             $z = round($player->getZ(), 0);
-            $group = $this->plugin->group;
-            $money = $this->plugin->money;
+            $group = $this->plugin->group->getUserDataMgr()->getGroup($player)->getName();
+            $money = $this->plugin->money->getMoney($player);
             $item = $player->getInventory()->getItemInHand()->getName();
             $id = $player->getInventory()->getItemInHand()->getId();
             $ids = $player->getInventory()->getItemInHand()->getDamage();
