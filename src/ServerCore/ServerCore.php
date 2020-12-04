@@ -49,6 +49,7 @@ class ServerCore extends PluginBase implements Listener {
     public $kills;
     public $money;
     public $music;
+    public $killChat;
     public $warnedPlayers;
     public $prefix = TextFormat::GRAY . "[" . TextFormat::AQUA . "ServerCore" . TextFormat::GRAY . "] ";
 
@@ -99,7 +100,15 @@ class ServerCore extends PluginBase implements Listener {
             $this->config->set("enable-kill-chat", false);
         }
 
-        foreach ($this->getServer()->getOnlinePlayers() as $player) {
+        $this->music = $this->getServer()->getPluginManager()->getPlugin("ZMusicBox");
+        $this->faction = $this->getServer()->getPluginManager()->getPlugin("FactionsPro");
+        $this->group = $this->getServer()->getPluginManager()->getPlugin("PurePerms");
+        $this->money = EconomyAPI::getInstance()->myMoney($player);
+        $this->killChat = $this->getServer()->getPluginManager()->getPlugin("KillChat");
+        // $this->kills = $this->killChat->getKills($name);
+        // $this->deaths = $this->killChat->getDeaths($name);
+
+        /*foreach ($this->getServer()->getOnlinePlayers() as $player) {
             // $player = $p->getPlayer();
             $name = $player->getName();
 
@@ -121,7 +130,7 @@ class ServerCore extends PluginBase implements Listener {
                 $this->kills = null;
                 $this->deaths = null;
             }
-        }
+        }*/
         $this->config->save();
         $this->warnedPlayers->save();
     }
