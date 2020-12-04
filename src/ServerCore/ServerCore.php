@@ -55,6 +55,7 @@ class ServerCore extends PluginBase implements Listener {
     public $kills;
     public $money;
     public $music;
+    public $killChat;
     public $warnedPlayers;
     public $prefix = TextFormat::GRAY . "[" . TextFormat::AQUA . "ServerCore" . TextFormat::GRAY . "] ";
 
@@ -112,8 +113,37 @@ class ServerCore extends PluginBase implements Listener {
             $this->config->set("enable-kill-chat", false);
         }
 
-        foreach ($this->getServer()->getOnlinePlayers() as $p) {
-            $player = $p->getPlayer();
+        if ($this->getServer()->getPluginManager()->getPlugin("ZMusicBox") !== null) {
+            $this->music = $this->getServer()->getPluginManager()->getPlugin("ZMusicBox");
+        } else {
+            $this->getLogger()->warn(TextFormat::RED . "ZMusicBox plugin is not installed. Some features may be disabled.");
+        }
+        if ($this->getServer()->getPluginManager()->getPlugin("FactionsPro") !== null) {
+            $this->faction = $this->getServer()->getPluginManager()->getPlugin("FactionsPro");
+        } else {
+            $this->getLogger()->warn(TextFormat::RED . 'FactionsPro plugin is not installed. Some features may be disabled.');
+        }
+        if ($this->getServer()->getPluginManager()->getPlugin("PurePerms") !== null) {
+        $this->group = $this->getServer()->getPluginManager()->getPlugin("PurePerms");
+        } else {
+            $this->getLogger()->warn(TextFormat::RED . 'PurePerms plugin is not installed. Some features may be disabled.');
+        }
+        if ($this->getServer()->getPluginManager()->getPlugin("EconomyAPI") !== null) {
+            $this->money = EconomyAPI::getInstance();
+            // $this->money = $this->getServer()->getPluginManager()->getPlugin("EconomyAPI");
+        } else {
+            $this->getLogger()->warn(TextFormat::RED . 'EconomyAPI plugin is not installed. Some features may be disabled.');
+        }
+        if ($this->getServer()->getPluginManager()->getPlugin("KillChat") !== null) {
+            $this->killChat = $this->getServer()->getPluginManager()->getPlugin("KillChat");
+        } else {
+            $this->getLogger()->warn(TextFormat::RED . "KillChat plugin is not installed. Some features may be disabled.");
+        }
+        // $this->kills = $this->killChat->getKills($name);
+        // $this->deaths = $this->killChat->getDeaths($name);
+
+        /*foreach ($this->getServer()->getOnlinePlayers() as $player) {
+            // $player = $p->getPlayer();
             $name = $player->getName();
 
             if ($this->config->get("enable-music") == true) {
@@ -141,14 +171,15 @@ class ServerCore extends PluginBase implements Listener {
                 $this->getLogger()->warn(TextFormat::RED . 'EconomyAPI plugin is not installed. Some features may be disabled.');
             }
 
-            if ($this->config->get("enable-kill-chat") == true) {
-                $this->kills = $this->getServer()->getPluginManager()->getPlugin("KillChat")->getKills($name);
-                $this->deaths = $this->getServer()->getPluginManager()->getPlugin("KillChat")->getDeaths($name);
+            if ($this->getServer()->getPluginManager()->getPlugin("KillChat") !== null) {
+                $api = $this->getServer()->getPluginManager()->getPlugin("KillChat");
+                $this->kills = $api->getKills($name);
+                $this->deaths = $api->getDeaths($name);
             } else {
                 $this->kills = null;
                 $this->deaths = null;
             }
-        }
+        }*/
         $this->config->save();
         $this->warnedPlayers->save();
     }
