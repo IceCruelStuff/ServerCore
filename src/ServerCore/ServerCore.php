@@ -99,7 +99,7 @@ class ServerCore extends PluginBase implements Listener {
             $this->config->set("enable-kill-chat", false);
         }
 
-        foreach ($this->getServer()->getOnlinePlayers() as $p) {
+        foreach ($this->getServer()->getOnlinePlayers() as $player) {
             $player = $p->getPlayer();
             $name = $player->getName();
 
@@ -109,12 +109,8 @@ class ServerCore extends PluginBase implements Listener {
                 $this->music = null;
             }
 
-            $api = $this->getServer()->getPluginManager()->getPlugin("FactionsPro");
-            $faction = $api->getPlayerFaction($player->getName());
-            $this->faction = $faction;
-            $api = $this->getServer()->getPluginManager()->getPlugin("PurePerms");
-            $group = $api->getUserDataMgr()->getGroup($player)->getName();
-            $this->group = $group;
+            $this->faction = $this->getServer()->getPluginManager()->getPlugin("FactionsPro")->getPlayerFaction($player->getName());
+            $this->group = $this->getServer()->getPluginManager()->getPlugin("PurePerms")->getUserDataMgr()->getGroup($player)->getName();
             $this->money = EconomyAPI::getInstance()->myMoney($player);
 
             if ($this->getServer()->getPluginManager()->getPlugin("KillChat") !== null) {
