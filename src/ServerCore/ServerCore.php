@@ -103,7 +103,7 @@ class ServerCore extends PluginBase implements Listener {
         $this->music = $this->getServer()->getPluginManager()->getPlugin("ZMusicBox");
         $this->faction = $this->getServer()->getPluginManager()->getPlugin("FactionsPro");
         $this->group = $this->getServer()->getPluginManager()->getPlugin("PurePerms");
-        $this->money = EconomyAPI::getInstance()->myMoney($player);
+        $this->money = EconomyAPI::getInstance();
         $this->killChat = $this->getServer()->getPluginManager()->getPlugin("KillChat");
         // $this->kills = $this->killChat->getKills($name);
         // $this->deaths = $this->killChat->getDeaths($name);
