@@ -33,7 +33,7 @@ class ScoreboardTask extends Task {
             $usage = $this->plugin->getServer()->getTickUsage();
             $online = $online = count($this->plugin->getServer()->getOnlinePlayers());
             $max_online = $this->plugin->getServer()->getMaxPlayers();
-            $fac = $this->plugin->faction;
+            $fac = $this->plugin->faction->getPlayerFaction($player);
             $x = round($player->getX(), 0);
             $y = round($player->getY(), 0);
             $z = round($player->getZ(), 0);
@@ -44,8 +44,8 @@ class ScoreboardTask extends Task {
             $ids = $player->getInventory()->getItemInHand()->getDamage();
             $level = $player->getLevel()->getName();
             $date = date("H.i");
-            $kills = $this->plugin->kills;
-            $deaths = $this->plugin->deaths;
+            $kills = $this->plugin->killChat->getKills($name);
+            $deaths = $this->plugin->killChat->getDeaths($name);
             $ping = $player->getPing($name);
             $lines = $config->get("line");
             $lines = str_replace("{name}", $name, $lines);
