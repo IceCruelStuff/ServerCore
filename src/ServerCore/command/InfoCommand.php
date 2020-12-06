@@ -10,19 +10,18 @@ use pocketmine\utils\TextFormat;
 use pocketmine\Player;
 use ServerCore\ServerCore as Main;
 
-class PingCommand extends Command implements PluginIdentifiableCommand {
+class InfoCommand extends Command implements PluginIdentifiableCommand {
 
     private $plugin;
 
     public function __construct(Main $plugin) {
         $this->plugin = $plugin;
         parent::__construct(
-            "ping",
-            "Returns player ping",
-            "/ping",
-            ["ms"]
+            "info",
+            "Info command",
+            "/info <ranks|server>"
         );
-        $this->setPermission("command.ping");
+        $this->setPermission("command.info");
     }
 
     public function getPlugin() : Plugin {
@@ -34,8 +33,18 @@ class PingCommand extends Command implements PluginIdentifiableCommand {
             return;
         }
 
+        $server = $this->plugin->config->get("info-server-command");
+        $ranks = $this->plugin->config->get("info-ranks-command");
         if ($sender instanceof Player) {
-            $sender->sendMessage("Ping: " . $sender->getPing() . "ms");
+            if (isset($args[0])) {
+                if ($args[0] === "ranks") {
+                    $sender->sendMessage($this->plugin->prefix . $ranks);
+                } elseif ($args[0] === "server") {
+                    $sender->sendMessage($this->plugin->prefix . $server);
+                }
+            } else {
+                $sender->sendMessage(TextFormat::RED . "Usage: /info <ranks|server>");
+            }
         } else {
             $sender->sendMessage(TextFormat::RED . "Please use this command in-game");
         }

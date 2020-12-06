@@ -1,6 +1,6 @@
 <?php
 
-namespace ServerCore\Command;
+namespace ServerCore\command;
 
 use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
@@ -44,7 +44,7 @@ class FlyCommand extends Command implements PluginIdentifiableCommand {
                 if ($this->plugin->warnedPlayers->exists($name)) {
                     $action = strtolower($this->plugin->warnedPlayers->get("Action"));
                     if ($action === "kick") {
-                        $player->kick($msg, false);
+                        $player->kick($message, false);
                         $sender->sendMessage(TextFormat::DARK_GREEN . $this->plugin->prefix . " " . $player->getName() . " was kicked");
                     }
                     if ($action === "ban") {
@@ -53,12 +53,12 @@ class FlyCommand extends Command implements PluginIdentifiableCommand {
                     }
                     if ($action === "deop") {
                         $player->setOp(false);
-                        $player->sendMessage(TextFormat::DARK_RED . $this->plugin->prefix . " Admin Warning: " . $msg);
+                        $player->sendMessage(TextFormat::DARK_RED . $this->plugin->prefix . " Admin Warning: " . $message);
                         $sender->sendMessage(TextFormat::DARK_GREEN . $this->plugin->prefix . " " . $player->getName() . " was deoped");
                     }
                 } elseif ($this->plugin->getServer()->getPlayer($name)->isOnline()) {
-                    $player->sendMessage(TextFormat::DARK_RED . $this->prefix . " Admin Warning: " . $msg);
-                    $sender->sendMessage(TextFormat::DARK_GREEN . $this->prefix . " " . $player->getName() . " was warned.");
+                    $player->sendMessage(TextFormat::DARK_RED . $this->plugin->prefix . " Admin Warning: " . $message);
+                    $sender->sendMessage(TextFormat::DARK_GREEN . $this->plugin->prefix . " " . $player->getName() . " was warned.");
                     $this->plugin->warnedPlayers->set($name);
                 }
             }

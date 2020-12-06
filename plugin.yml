@@ -6,53 +6,8 @@ load: STARTUP
 author: IceCruelStuff
 description: An advanced core plugin
 website: https://github.com/IceCruelStuff/ServerCore
-softdepend: [FactionsPro, ZMusicBox, KillChat, PurePerms, EconomyAPI]
-
-commands:
-  warn:
-    description: Warns a player
-    permission: command.warn
-    usage: "/warn <user> <string:message>"
-
-  vanish:
-    description: Makes you invisible
-    permission: command.vanish
-    usage: "/vanish <player>"
-
-  v:
-    description: Makes you invisible
-    permission: command.vanish
-    usage: "/v <player>"
-
-  forgive:
-    description: Forgives a player
-    permission: command.forgive
-    usage: "/forgive <user>"
-
-  ping:
-    description: Returns player ping
-    permission: command.ping
-    usage: "/ping"
-
-  clear:
-    description: Clears player inventory
-    permission: command.clear
-    usage: "/clear"
-
-  clearinv:
-    description: Clears player inventory
-    permission: command.clear
-    usage: "/clearinv"
-
-  hub:
-    description: Teleports player to hub/lobby
-    permission: command.hub
-    usage: "/hub"
-    
-  lobby:
-    description: Teleports player to hub/lobby
-    permission: command.hub
-    usage: "/lobby"
+depend: [PurePerms, EconomyAPI]
+softdepend: [FactionsPro, ZMusicBox, KillChat]
 
 permissions:
   command.warn:
@@ -90,3 +45,7 @@ permissions:
   command.feed:
     description: Allows player to use /feed
     default: op
+
+  command.info:
+    description: Allows player to use /info
+    default: true

@@ -1,6 +1,6 @@
 <?php
 
-namespace ServerCore\Command;
+namespace ServerCore\command;
 
 use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
@@ -37,14 +37,14 @@ class HealCommand extends Command implements PluginIdentifiableCommand {
             if (isset($args[0])) {
                 if ($this->plugin->getServer()->getPlayer($args[0])) {
                     $player = $this->plugin->getServer()->getPlayer($args[0]);
-                    $player->setHealth(20);
+                    $player->setHealth($player->getMaxHealth());
                     $player->sendMessage(TextFormat::DARK_PURPLE . "You have been healed");
                     $sender->sendMessage(TextFormat::GREEN . "You have healed " . $player->getName());
                 } else {
                     $sender->sendMessage(TextFormat::RED . "Player not found");
                 }
             } else {
-                $sender->setHealth(20);
+                $sender->setHealth($sender->getMaxHealth());
                 $sender->sendMessage(TextFormat::DARK_PURPLE . "You have been healed");
             }
         } else {
@@ -52,7 +52,7 @@ class HealCommand extends Command implements PluginIdentifiableCommand {
             if (isset($args[0])) {
                 if ($this->plugin->getServer()->getPlayer($args[0])) {
                     $player = $this->plugin->getServer()->getPlayer($args[0]);
-                    $player->setHealth(20);
+                    $player->setHealth($player->getMaxHealth());
                     $player->sendMessage(TextFormat::DARK_PURPLE . "You have been healed");
                     $sender->sendMessage(TextFormat::GREEN . "You have healed " . $player->getName());
                 } else {
