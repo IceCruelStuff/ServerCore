@@ -67,7 +67,7 @@ class ServerCore extends PluginBase implements Listener {
 
     private $scoreboards = [];
 
-    protected $vanish = [];
+    public $vanish = [];
 
     public function onEnable() : void {
         self::$instance = $this;
