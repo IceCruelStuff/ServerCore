@@ -34,10 +34,19 @@ class PingCommand extends Command implements PluginIdentifiableCommand {
             return;
         }
 
-        if ($sender instanceof Player) {
-            $sender->sendMessage("Ping: " . $sender->getPing() . "ms");
+        if (isset($args[0])) {
+            if ($this->plugin->getServer()->getPlayer($args[0])) {
+                $player = $this->plugin->getServer()->getPlayer($args[0]);
+                $sender->sendMessage("Ping: " . $player->getPing() . "ms");
+            } else {
+                $sender->sendMessage(TextFormat::RED . "Player not found");
+            }
         } else {
-            $sender->sendMessage(TextFormat::RED . "Please use this command in-game");
+            if ($sender instanceof Player) {
+                $sender->sendMessage("Ping: " . $sender->getPing() . "ms");
+            } else {
+                $sender->sendMessage(TextFormat::RED . "Please use this command in-game");
+            }
         }
     }
 
