@@ -36,6 +36,16 @@ use pocketmine\utils\TextFormat as C;
 use pocketmine\utils\TextFormat;
 use pocketmine\Player;
 use pocketmine\Server;
+use ServerCore\command\ClearCommand;
+use ServerCore\command\FeedCommand;
+use ServerCore\command\FlyCommand;
+use ServerCore\command\ForgiveCommand;
+use ServerCore\command\HealCommand;
+use ServerCore\command\HubCommand;
+use ServerCore\command\InfoCommand;
+use ServerCore\command\PingCommand;
+use ServerCore\command\VanishCommand;
+use ServerCore\command\WarnCommand;
 use ServerCore\task\ScoreboardTask;
 use onebone\economyapi\EconomyAPI;
 
@@ -57,10 +67,21 @@ class ServerCore extends PluginBase implements Listener {
 
     private $scoreboards = [];
 
-    protected $vanish = [];
+    public $vanish = [];
 
     public function onEnable() : void {
+        self::$instance = $this;
         $this->getServer()->getPluginManager()->registerEvents($this, $this);
+        $this->getServer()->getCommandMap()->register("clear", new ClearCommand($this));
+        $this->getServer()->getCommandMap()->register("feed", new FeedCommand($this));
+        $this->getServer()->getCommandMap()->register("fly", new FlyCommand($this));
+        $this->getServer()->getCommandMap()->register("forgive", new ForgiveCommand($this));
+        $this->getServer()->getCommandMap()->register("heal", new HealCommand($this));
+        $this->getServer()->getCommandMap()->register("hub", new HubCommand($this));
+        $this->getServer()->getCommandMap()->register("info", new InfoCommand($this));
+        $this->getServer()->getCommandMap()->register("ping", new PingCommand($this));
+        $this->getServer()->getCommandMap()->register("vanish", new VanishCommand($this));
+        $this->getServer()->getCommandMap()->register("warn", new WarnCommand($this));
 
         @mkdir($this->getDataFolder());
         $this->saveResource("warnedPlayers.txt");
@@ -102,14 +123,21 @@ class ServerCore extends PluginBase implements Listener {
 
         if ($this->getServer()->getPluginManager()->getPlugin("ZMusicBox") !== null) {
             $this->music = $this->getServer()->getPluginManager()->getPlugin("ZMusicBox");
+        } else {
+            $this->getLogger()->info(TextFormat::RED . "ZMusicBox plugin is not installed. Some features may be disabled.");
         }
         if ($this->getServer()->getPluginManager()->getPlugin("FactionsPro") !== null) {
             $this->faction = $this->getServer()->getPluginManager()->getPlugin("FactionsPro");
+        } else {
+            $this->getLogger()->info(TextFormat::RED . 'FactionsPro plugin is not installed. Some features may be disabled.');
         }
         $this->group = $this->getServer()->getPluginManager()->getPlugin("PurePerms");
         $this->money = EconomyAPI::getInstance();
+        // $this->money = $this->getServer()->getPluginManager()->getPlugin("EconomyAPI");
         if ($this->getServer()->getPluginManager()->getPlugin("KillChat") !== null) {
             $this->killChat = $this->getServer()->getPluginManager()->getPlugin("KillChat");
+        } else {
+            $this->getLogger()->info(TextFormat::RED . "KillChat plugin is not installed. Some features may be disabled.");
         }
         // $this->kills = $this->killChat->getKills($name);
         // $this->deaths = $this->killChat->getDeaths($name);
@@ -124,9 +152,24 @@ class ServerCore extends PluginBase implements Listener {
                 $this->music = null;
             }
 
-            $this->faction = $this->getServer()->getPluginManager()->getPlugin("FactionsPro")->getPlayerFaction($player);
-            $this->group = $this->getServer()->getPluginManager()->getPlugin("PurePerms")->getUserDataMgr()->getGroup($player)->getName();
-            $this->money = EconomyAPI::getInstance()->myMoney($player);
+            if ($this->getServer()->getPluginManager()->getPlugin("FactionsPro")) {
+                $this->faction = $this->getServer()->getPluginManager()->getPlugin("FactionsPro")->getPlayerFaction($player->getName());
+            } else {
+                $this->getLogger()->info(TextFormat::RED . 'FactionsPro plugin is not installed. Some features may be disabled.');
+            }
+
+            if ($this->getServer()->getPluginManager()->getPlugin("PurePerms")) {
+                $this->group = $this->getServer()->getPluginManager()->getPlugin("PurePerms")->getUserDataMgr()->getGroup($player)->getName();
+            } else {
+                $this->getLogger()->info(TextFormat::RED . 'PurePerms plugin is not installed. Some features may be disabled.');
+            }
+
+            if ($this->getServer()->getPluginManager()->getPlugin("EconomyAPI")) {
+                $this->money = EconomyAPI::getInstance()->myMoney($player);
+                //$this->money = $this->getServer()->getPluginManager()->getPlugin("EconomyAPI")->myMoney($player);
+            } else {
+                $this->getLogger()->info(TextFormat::RED . 'EconomyAPI plugin is not installed. Some features may be disabled.');
+            }
 
             if ($this->getServer()->getPluginManager()->getPlugin("KillChat") !== null) {
                 $api = $this->getServer()->getPluginManager()->getPlugin("KillChat");
@@ -147,6 +190,14 @@ class ServerCore extends PluginBase implements Listener {
 
     public function onLoad() : void {
         self::$instance = $this;
+    }
+
+    public function getMoney() : ?EconomyAPI {
+        return $this->money;
+    }
+
+    public function getGroup() {
+        return $this->group;
     }
 
     public static function getInstance() : ServerCore {
@@ -262,235 +313,6 @@ class ServerCore extends PluginBase implements Listener {
         } else {
             $event->setQuitMessage("");
         }
-    }
-
-    public function onCommand(CommandSender $sender, Command $command, string $label, array $args) : bool {
-        $name = $sender->getName();
-        $server = $this->config->get("info-server-command");
-        $ranks = $this->config->get("info-ranks-command");
-        switch ($command->getName()) {
-            case "heal":
-                if ($sender instanceof Player) {
-                    if ($sender->hasPermission("command.heal")) {
-                        $sender->sendMessage(TextFormat::DARK_PURPLE . " You have been healed");
-                        $sender->setHealth(20);
-                    } else {
-                        $sender->sendMessage(TextFormat::RESET . TextFormat::RED . "You do not have permission to run this command");
-                    }
-                } else {
-                    $sender->sendMessage("Please use this command in-game");
-                }
-                break;
-            case "feed":
-            case "eat":
-                if ($sender instanceof Player) {
-                    if ($sender->hasPermission("command.feed")) {
-                        if ($sender->getFood() == 20) {
-                            $sender->sendMessage(TextFormat::RED . "You already have maxed food");
-                        } else {
-                            $sender->setFood(20);
-                            $sender->sendMessage(TextFormat::GREEN . "You have been fed");
-                        }
-                    } else {
-                        $sender->sendMessage(TextFormat::RED . "You do not have permission to run this command");
-                    }
-                } else {
-                    $sender->sendMessage(TextFormat::RED . "Please use this command in-game");
-                }
-                break;
-            case "warn":
-                if ($sender->hasPermission("command.warn")) {
-                    if ((!isset($args[0])) || (!isset($args[1]))) {
-                        $sender->sendMessage(TextFormat::GREEN . "Please enter the player name and the message correctly.");
-                        return true;
-                    } else if ($this->getServer()->getPlayer($args[0]) instanceof Player && $this->getServer()->getPlayer($args[0])->isOnline()) {
-                        if ($args[1] !== null) {
-                            $name = strtolower(array_shift($args));
-                            $player = $this->getServer()->getPlayer($name);
-                            $msg = implode(' ', $args);
-                            if ($this->warnedPlayers->exists($name)) {
-                                $action = strtolower($this->getConfig()->get("Action"));
-                                if ($action === "kick") {
-                                    $player->kick($msg, false);
-                                    $sender->sendMessage(TextFormat::DARK_GREEN . $this->prefix . " " . $player->getName() . " was kicked");
-                                }
-                                if ($action === "ban") {
-                                    $player->setBanned(true);
-                                    $sender->sendMessage(TextFormat::DARK_GREEN . $this->prefix . " " . $player->getName() . " was banned");
-                                }
-                                if ($action === "deop") {
-                                    $player->setOp(false);
-                                    $player->sendMessage(TextFormat::DARK_RED . $this->prefix . " Admin Warning: " . $msg);
-                                    $sender->sendMessage(TextFormat::DARK_GREEN . $this->prefix . " " . $player->getName() . " was deoped");
-                                }
-                                return true;
-                            } elseif ($this->getServer()->getPlayer($name)->isOnline()) {
-                                $player->sendMessage(TextFormat::DARK_RED . $this->prefix . " Admin Warning: " . $msg);
-                                $sender->sendMessage(TextFormat::DARK_GREEN . $this->prefix . " " . $player->getName() . " was warned.");
-                                $this->warnedPlayers->set($name);
-                                return true;
-                            }
-                        }
-                    } else {
-                        $sender->sendMessage(TextFormat::YELLOW . "Player does not exist or is not online.");
-                        return true;
-                    }
-                } else {
-                    $sender->sendMessage(TextFormat::RED . "You do not have permission to run this command");
-                    return true;
-                }
-            case "forgive":
-                if ($sender->hasPermission("command.forgive")) {
-                    if (isset($args[0])) {
-                        if ($this->warnedPlayers->exists($args[0])) {
-                            $this->warnedPlayers->remove($args[0]);
-                            $player = $this->getServer()->getPlayer($args[0]);
-                            $action = strtolower($this->warnedPlayers->get("Action"));
-                            if ($action === "ban") {
-                                $player->setBanned(false);
-                            }
-                            if ($action === "deop") {
-                                $player->setOp(true);
-                            }
-                            $sender->sendMessage(TextFormat::BLUE . $args[0] . " has been forgiven.");
-                        } else {
-                            $sender->sendMessage(TextFormat::RED . "Player has not been warned before.");
-                        }
-                    }
-                } else {
-                    $sender->sendMessage(TextFormat::RED . "You do not have permission to run this command");
-                }
-                break;
-            case "ping":
-            case "ms":
-                if ($sender->hasPermission("command.ping")) {
-                    if ($sender instanceof Player) {
-                        $sender->sendMessage("Ping: " . $sender->getPing() . "ms");
-                    } else {
-                        $sender->sendMessage(TextFormat::RED . "Please use this command in-game");
-                    }
-                } else {
-                    $sender->sendMessage(TextFormat::RED . "You do not have permission to run this command");
-                }
-                break;
-            case "fly":
-            case "flight":
-                if ($sender->hasPermission("command.fly")) {
-                    if ($sender instanceof Player) {
-                        if ($sender->getAllowFlight()) {
-                            $sender->setFlying(false);
-                            $sender->setAllowFlight(false);
-                            $sender->sendMessage(TextFormat::RED . "You have disabled flight mode");
-                        } else {
-                            $sender->setAllowFlight(true);
-                            $sender->sendMessage(TextFormat::GREEN . "You have enabled flight mode");
-                        }
-                    } else {
-                        $sender->sendMessage(TextFormat::RED . "Please use this command in-game");
-                    }
-                } else {
-                    $sender->sendMessage(TextFormat::RED . "You do not have permission to run this command");
-                }
-                break;
-            case "vanish":
-            case "v":
-                if ($sender instanceof Player) {
-                    if ($sender->hasPermission("command.vanish")) {
-                        if (empty($args[0])) {
-                            if (!isset($this->vanish[$sender->getName()])) {
-                                $this->vanish[$sender->getName()] = true;
-                                $sender->setDataFlag(Entity::DATA_FLAGS, Entity::DATA_FLAG_INVISIBLE, true);
-                                $sender->setNameTagVisible(false);
-                                $sender->sendMessage(TextFormat::GREEN . "You are now invisible");
-                            } else if (isset($this->vanish[$sender->getName()])) {
-                                unset($this->vanish[$sender->getName()]);
-                                $sender->setDataFlag(Entity::DATA_FLAGS, Entity::DATA_FLAG_INVISIBLE, false);
-                                $sender->setNameTagVisible(true);
-                                $sender->sendMessage(TextFormat::GREEN . "You are no longer invisible");
-                            }
-                        }
-                        if ($this->getServer()->getPlayer($args[0])) {
-                            $player = $this->getServer()->getPlayer($args[0]);
-                            if (!isset($this->vanish[$player->getName()])) {
-                                $this->vanish[$player->getName()] = true;
-                                $player->setDataFlag(Entity::DATA_FLAGS, Entity::DATA_FLAG_INVISIBLE, true);
-                                $player->setNameTagVisible(false);
-                                $player->sendMessage(TextFormat::GREEN . "You are now invisible");
-                                $sender->sendMessage(TextFormat::GREEN . "You have vanished " . TextFormat::AQUA . $player->getName());
-                            } else if (isset($this->vanish[$player->getName()])) {
-                                unset($this->vanish[$player->getName()]);
-                                $player->setDataFlag(Entity::DATA_FLAGS, Entity::DATA_FLAG_INVISIBLE, false);
-                                $player->setNameTagVisible(true);
-                                $player->sendMessage(TextFormat::GREEN . "You are no longer invisible");
-                                $sender->sendMessage(TextFormat::GREEN . "You have made " . TextFormat::AQUA . $player->getName() . TextFormat::GREEN . " visible");
-                            }
-                        } else {
-                            $sender->sendMessage(TextFormat::RED . "Player not found");
-                        }
-                    } else {
-                        $sender->sendMessage(TextFormat::RED . "You do not have permission to run this command");
-                    }
-                } else {
-                    $sender->sendMessage(TextFormat::RED . "Please use this command in-game");
-                }
-                break;
-            case "info":
-                if ($sender instanceof Player) {
-                    if (!empty($args[0]) && count($args) === 1) {
-                        if ($args[0] == "ranks") {
-                            $sender->sendMessage($this->prefix . $ranks);
-                            return true;
-                        }
-                        if ($args[0] == "server") {
-                            $sender->sendMessage($this->prefix . $server);
-                            return true;
-                        } else {
-                            $sender->sendMessage($this->prefix. "Usage: /info <ranks|server>");
-                            return true;
-                        }
-                    } else {
-                        $sender->sendMessage($this->prefix. "Usage: /info <ranks|server>");
-                        return true;
-                    }
-                } else {
-                    $sender->sendMessage(TextFormat::RED . "Please use this command in-game");
-                    return true;
-                }
-            case "clear":
-            case "clearinv":
-                if ($sender instanceof Player) {
-                    if ($sender->hasPermission("command.clear")) {
-                        $sender->getArmorInventory()->clearAll();
-                        $sender->getInventory()->clearAll();
-                        $sender->sendMessage(TextFormat::RED . "Your inventory has been cleared");
-                    } else {
-                        $sender->sendMessage(TextFormat::RED . "You do not have permission to run this command");
-                    }
-                } else {
-                    $sender->sendMessage(TextFormat::RED . "Please use this command in-game");
-                }
-                break;
-            case "lobby":
-            case "hub":
-                if ($sender->hasPermission("command.hub")) {
-                    if ($sender instanceof Player) {
-                        $spawnLocation = $this->getServer()->getDefaultLevel()->getSafeSpawn();
-                        $sender->teleport($spawnLocation);
-                        $sender->sendMessage($this->prefix . "§aWelcome to spawn");
-                        $this->getMainItems($sender);
-                        $sender->setHealth(20);
-                        $sender->setFood(20);
-                        return true;
-                    } else {
-                        $sender->sendMessage(TextFormat::RED . "Please use this command in-game");
-                        return true;
-                    }
-                } else {
-                    $sender->sendMessage(TextFormat::RED . "You do not have permission to run this command");
-                    return true;
-                }
-        }
-        return true;
     }
 
     public function onInteract(PlayerInteractEvent $event) {
