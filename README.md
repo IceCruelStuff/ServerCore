@@ -8,9 +8,6 @@
 
 An advanced server core for PocketMine-MP.
 
-# Attention
-
-Do not use this plugin. It is currently still in development.
 
 ```
 Copyright 2020 IceCruelStuff
