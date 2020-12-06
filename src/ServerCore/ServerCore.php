@@ -123,17 +123,9 @@ class ServerCore extends PluginBase implements Listener {
         } else {
             $this->getLogger()->warn(TextFormat::RED . 'FactionsPro plugin is not installed. Some features may be disabled.');
         }
-        if ($this->getServer()->getPluginManager()->getPlugin("PurePerms") !== null) {
         $this->group = $this->getServer()->getPluginManager()->getPlugin("PurePerms");
-        } else {
-            $this->getLogger()->warn(TextFormat::RED . 'PurePerms plugin is not installed. Some features may be disabled.');
-        }
-        if ($this->getServer()->getPluginManager()->getPlugin("EconomyAPI") !== null) {
-            $this->money = EconomyAPI::getInstance();
-            // $this->money = $this->getServer()->getPluginManager()->getPlugin("EconomyAPI");
-        } else {
-            $this->getLogger()->warn(TextFormat::RED . 'EconomyAPI plugin is not installed. Some features may be disabled.');
-        }
+        $this->money = EconomyAPI::getInstance();
+        // $this->money = $this->getServer()->getPluginManager()->getPlugin("EconomyAPI");
         if ($this->getServer()->getPluginManager()->getPlugin("KillChat") !== null) {
             $this->killChat = $this->getServer()->getPluginManager()->getPlugin("KillChat");
         } else {
