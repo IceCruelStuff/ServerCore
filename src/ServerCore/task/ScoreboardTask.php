@@ -58,18 +58,18 @@ class ScoreboardTask extends Task {
             $ping = $player->getPing($name);
             // $lines = $config->get("line");
             $api->new($p, $p->getName(), $titles[$this->titleIndex]);
-            $api->setLine($player, 1, $name);
-            $api->setLine($player, 2, $tps);
-            $api->setLine($player, 3, $usage);
-            $api->setLine($player, 4, $online);
-            $api->setLine($player, 5, $x);
-            $api->setLine($player, 6, $y);
-            $api->setLine($player, 7, $z);
-            $api->setLine($player, 8, $item);
-            $api->setLine($player, 9, $level);
-            $api->setLine($player, 10, $ping);
-            $api->setLine($player, 11, $group);
-            $api->setLine($player, 12, $money);
+            $api->setLine($player, 1, strval($name));
+            $api->setLine($player, 2, strval($tps));
+            $api->setLine($player, 3, strval($usage));
+            $api->setLine($player, 4, strval($online));
+            $api->setLine($player, 5, strval($x));
+            $api->setLine($player, 6, strval($y));
+            $api->setLine($player, 7, strval($z));
+            $api->setLine($player, 8, strval($item));
+            $api->setLine($player, 9, strval($level));
+            $api->setLine($player, 10, strval($ping));
+            $api->setLine($player, 11, strval($group));
+            $api->setLine($player, 12, strval($money));
             if ($fac !== null) {
                 $api->setLine($player, 13, $fac);
             } elseif ($kills !== null && $deaths !== null) {
