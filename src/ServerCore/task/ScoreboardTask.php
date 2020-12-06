@@ -21,7 +21,7 @@ class ScoreboardTask extends Task {
         $this->titleIndex++;
         $config = $this->plugin->getConfig();
         $titles = is_array($config->get("title")) ? $config->get("title") : ["Your Server"];
-        $lines = is_array($config->get("line")) ? $config->get("line") : ["Please update your config"];
+        // $lines = is_array($config->get("line")) ? $config->get("line") : ["Please update your config"];
         if (!isset($titles[$this->titleIndex])) {
             $this->titleIndex = 0;
         }
@@ -33,47 +33,52 @@ class ScoreboardTask extends Task {
             $usage = $this->plugin->getServer()->getTickUsage();
             $online = $online = count($this->plugin->getServer()->getOnlinePlayers());
             $max_online = $this->plugin->getServer()->getMaxPlayers();
-            $fac = $this->plugin->faction->getPlayerFaction($player);
+            if ($this->plugin->getServer()->getPluginManager()->getPlugin("FactionsPro") !== null) {
+                $fac = $this->plugin->faction->getPlayerFaction($player);
+            } else {
+                $fac = null;
+            }
             $x = round($player->getX(), 0);
             $y = round($player->getY(), 0);
             $z = round($player->getZ(), 0);
             $group = $this->plugin->group->getUserDataMgr()->getGroup($player)->getName();
-            $money = $this->plugin->money->getMoney($player);
+            $money = $this->plugin->money->myMoney($player);
             $item = $player->getInventory()->getItemInHand()->getName();
             $id = $player->getInventory()->getItemInHand()->getId();
             $ids = $player->getInventory()->getItemInHand()->getDamage();
             $level = $player->getLevel()->getName();
             $date = date("H.i");
-            $kills = $this->plugin->killChat->getKills($name);
-            $deaths = $this->plugin->killChat->getDeaths($name);
+            if ($this->plugin->getServer()->getPluginManager()->getPlugin("KillChat") !== null) {
+                $kills = $this->plugin->killChat->getKills($name);
+                $deaths = $this->plugin->killChat->getDeaths($name);
+            } else {
+                $kills = null;
+                $deaths = null;
+            }
             $ping = $player->getPing($name);
-            $lines = $config->get("line");
-            $lines = str_replace("{name}", $name, $lines);
-            $lines = str_replace("{tps}", $tps, $lines);
-            $lines = str_replace("{usage}", $usage, $lines);
-            $lines = str_replace("{online}", $online, $lines);
-            $lines = str_replace("{max_online}", $ids, $lines);
-            $lines = str_replace("{faction}", $fac, $lines);
-            $lines = str_replace("{x}", $x, $lines);
-            $lines = str_replace("{y}", $y, $lines);
-            $lines = str_replace("{z}", $z, $lines);
-            $lines = str_replace("{group}", $group, $lines);
-            $lines = str_replace("{money}", $money, $lines);
-            $lines = str_replace("{item}", $item, $lines);
-            $lines = str_replace("{id}", $id, $lines);
-            $lines = str_replace("{ids}", $ids, $lines);
-            $lines = str_replace("{level}", $level, $lines);
-            $lines = str_replace("{time}", $date, $lines);
-            $lines = str_replace("{kills}", $kills, $lines);
-            $lines = str_replace("{deaths}", $deaths, $lines);
-            $lines = str_replace("{ping}", $ping, $lines);
+            // $lines = $config->get("line");
             $api->new($p, $p->getName(), $titles[$this->titleIndex]);
-            $i = 0;
-            foreach ($lines as $line) {
-                if ($i < 15) {
-                    $i++;
-                    $api->setLine($p, $i, $line);
-                }
+            $api->setLine($player, 1, $name);
+            $api->setLine($player, 2, $tps);
+            $api->setLine($player, 3, $usage);
+            $api->setLine($player, 4, $online);
+            $api->setLine($player, 5, $x);
+            $api->setLine($player, 6, $y);
+            $api->setLine($player, 7, $z);
+            $api->setLine($player, 8, $item);
+            $api->setLine($player, 9, $level);
+            $api->setLine($player, 10, $ping);
+            $api->setLine($player, 11, $group);
+            $api->setLine($player, 12, $money);
+            if ($fac !== null) {
+                $api->setLine($player, 13, $fac);
+            } elseif ($kills !== null && $deaths !== null) {
+                $api->setLine($player, 13, $kills);
+                $api->setLine($player, 14, $deaths);
+            }
+            if ($kills !== null && $deaths !== null) {
+                $api->setLine($player, 14, $kills);
+                $api->setLine($player, 15, $deaths);
             }
         }
     }

@@ -36,7 +36,7 @@ use pocketmine\utils\TextFormat as C;
 use pocketmine\utils\TextFormat;
 use pocketmine\Player;
 use pocketmine\Server;
-use ServerCore\task\ScoreboardTask;
+//use ServerCore\task\ScoreboardTask;
 use onebone\economyapi\EconomyAPI;
 
 class ServerCore extends PluginBase implements Listener {
@@ -78,7 +78,7 @@ class ServerCore extends PluginBase implements Listener {
             "enable-kill-chat" => false
         ]);
 
-        $this->getScheduler()->scheduleRepeatingTask(new ScoreboardTask($this, 0), (int) $this->getConfig()->get("update-interval"));
+        // $this->getScheduler()->scheduleRepeatingTask(new ScoreboardTask($this, 0), (int) $this->getConfig()->get("update-interval"));
 
         if (!$this->config->get("disable-lava")) {
             $this->config->set("disable-lava", false);
@@ -100,11 +100,17 @@ class ServerCore extends PluginBase implements Listener {
             $this->config->set("enable-kill-chat", false);
         }
 
-        $this->music = $this->getServer()->getPluginManager()->getPlugin("ZMusicBox");
-        $this->faction = $this->getServer()->getPluginManager()->getPlugin("FactionsPro");
+        if ($this->getServer()->getPluginManager()->getPlugin("ZMusicBox") !== null) {
+            $this->music = $this->getServer()->getPluginManager()->getPlugin("ZMusicBox");
+        }
+        if ($this->getServer()->getPluginManager()->getPlugin("FactionsPro") !== null) {
+            $this->faction = $this->getServer()->getPluginManager()->getPlugin("FactionsPro");
+        }
         $this->group = $this->getServer()->getPluginManager()->getPlugin("PurePerms");
         $this->money = EconomyAPI::getInstance();
-        $this->killChat = $this->getServer()->getPluginManager()->getPlugin("KillChat");
+        if ($this->getServer()->getPluginManager()->getPlugin("KillChat") !== null) {
+            $this->killChat = $this->getServer()->getPluginManager()->getPlugin("KillChat");
+        }
         // $this->kills = $this->killChat->getKills($name);
         // $this->deaths = $this->killChat->getDeaths($name);
 
