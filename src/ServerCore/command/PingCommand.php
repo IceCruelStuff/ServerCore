@@ -45,7 +45,7 @@ class PingCommand extends Command implements PluginIdentifiableCommand {
             if ($sender instanceof Player) {
                 $sender->sendMessage("Ping: " . $sender->getPing() . "ms");
             } else {
-                $sender->sendMessage(TextFormat::RED . "Please use this command in-game");
+                $sender->sendMessage(TextFormat::RED . "Please enter player name");
             }
         }
     }
