@@ -24,7 +24,7 @@ class FlyCommand extends Command implements PluginIdentifiableCommand {
         $this->setPermission("command.warn");
     }
 
-    public function getPlugin : Plugin {
+    public function getPlugin() : Plugin {
         return $this->plugin;
     }
 

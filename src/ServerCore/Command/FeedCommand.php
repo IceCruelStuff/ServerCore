@@ -71,7 +71,7 @@ class FeedCommand extends Command implements PluginIdentifiableCommand {
                     $sender->sendMessage(TextFormat::RED . "Player not found");
                 }
             } else {
-                $sender->sendMessage(TextFormat::RED . "Please enter a player name")
+                $sender->sendMessage(TextFormat::RED . "Please enter a player name");
             }
         }
     }
