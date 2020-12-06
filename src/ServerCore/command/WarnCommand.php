@@ -10,7 +10,7 @@ use pocketmine\utils\TextFormat;
 use pocketmine\Player;
 use ServerCore\ServerCore as Main;
 
-class FlyCommand extends Command implements PluginIdentifiableCommand {
+class WarnCommand extends Command implements PluginIdentifiableCommand {
 
     private $plugin;
 
