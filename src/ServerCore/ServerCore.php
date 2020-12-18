@@ -72,16 +72,7 @@ class ServerCore extends PluginBase implements Listener {
     public function onEnable() : void {
         self::$instance = $this;
         $this->getServer()->getPluginManager()->registerEvents($this, $this);
-        $this->getServer()->getCommandMap()->register("clear", new ClearCommand($this));
-        $this->getServer()->getCommandMap()->register("feed", new FeedCommand($this));
-        $this->getServer()->getCommandMap()->register("fly", new FlyCommand($this));
-        $this->getServer()->getCommandMap()->register("forgive", new ForgiveCommand($this));
-        $this->getServer()->getCommandMap()->register("heal", new HealCommand($this));
-        $this->getServer()->getCommandMap()->register("hub", new HubCommand($this));
-        $this->getServer()->getCommandMap()->register("info", new InfoCommand($this));
-        $this->getServer()->getCommandMap()->register("ping", new PingCommand($this));
-        $this->getServer()->getCommandMap()->register("vanish", new VanishCommand($this));
-        $this->getServer()->getCommandMap()->register("warn", new WarnCommand($this));
+        $this->registerCommands();
 
         @mkdir($this->getDataFolder());
         $this->saveResource("warnedPlayers.txt");
@@ -190,6 +181,19 @@ class ServerCore extends PluginBase implements Listener {
 
     public function onLoad() : void {
         self::$instance = $this;
+    }
+
+    public function registerCommands() {
+        $this->getServer()->getCommandMap()->register("clear", new ClearCommand($this));
+        $this->getServer()->getCommandMap()->register("feed", new FeedCommand($this));
+        $this->getServer()->getCommandMap()->register("fly", new FlyCommand($this));
+        $this->getServer()->getCommandMap()->register("forgive", new ForgiveCommand($this));
+        $this->getServer()->getCommandMap()->register("heal", new HealCommand($this));
+        $this->getServer()->getCommandMap()->register("hub", new HubCommand($this));
+        $this->getServer()->getCommandMap()->register("info", new InfoCommand($this));
+        $this->getServer()->getCommandMap()->register("ping", new PingCommand($this));
+        $this->getServer()->getCommandMap()->register("vanish", new VanishCommand($this));
+        $this->getServer()->getCommandMap()->register("warn", new WarnCommand($this));
     }
 
     public function getMoney() : ?EconomyAPI {
