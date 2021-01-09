@@ -332,7 +332,7 @@ class ServerCore extends PluginBase implements Listener {
         if ($item->getName() == C::BOLD . C::GOLD . "Teleporter") {
             $this->teleportItems($player);
         } else if ($item->getName() == C::BOLD . C::GOLD . "Info") {
-            $player->sendMessage($this->prefix . "§aUsage: /info <ranks|server>");
+            $player->sendMessage($this->prefix . TextFormat::GREEN . "Usage: /info <ranks|server>");
         } else if ($item->getName() == C::BOLD . C::RED . "Enable Fly Mode") {
             $player->setAllowFlight(true);
             $player->getInventory()->remove(Item::get(288)->setCustomName(C::BOLD . C::BLUE . "Enable Fly Mode"));
@@ -359,18 +359,18 @@ class ServerCore extends PluginBase implements Listener {
             $x = $this->config->get("Game-3-X");
             $y = $this->config->get("Game-3-Y");
             $z = $this->config->get("Game-3-Z");
-        } else if ($item->getCustomName() == "§ePlayer Hiding") {
-            $player->getInventory()->remove(Item::get(280)->setCustomName("§ePlayers Hiding"));
-            $player->getInventory()->setItem(6, Item::get(369)->setCustomName("§ePlayers Show"));
-            $player->sendMessage($this->prefix . "§aAll players are now invisible!");
+        } else if ($item->getCustomName() == TextFormat::YELLOW . "Player Hiding") {
+            $player->getInventory()->remove(Item::get(280)->setCustomName(TextFormat::YELLOW . "Players Hiding"));
+            $player->getInventory()->setItem(6, Item::get(369)->setCustomName(TextFormat::YELLOW . "Players Show"));
+            $player->sendMessage($this->prefix . TextFormat::GREEN . "All players are now invisible!");
             $this->hideAll[] = $player;
             foreach ($this->getServer()->getOnlinePlayers() as $p2) {
                 $player->hideplayer($p2);
             }
-        } else if ($item->getCustomName() == "§ePlayers Show") {
-            $player->getInventory()->remove(Item::get(369)->setCustomName("§ePlayers Show"));
-            $player->getInventory()->setItem(6, Item::get(280)->setCustomName("§ePlayer Hiding"));
-            $player->sendMessage($this->prefix . "§aAll players are now visible!");
+        } else if ($item->getCustomName() == TextFormat::YELLOW . "Players Show") {
+            $player->getInventory()->remove(Item::get(369)->setCustomName(TextFormat::YELLOW . "Players Show"));
+            $player->getInventory()->setItem(6, Item::get(280)->setCustomName(TextFormat::YELLOW . "Player Hiding"));
+            $player->sendMessage($this->prefix . TextFormat::GREEN . "All players are now visible!");
             unset($this->hideAll[array_search($player, $this->hideAll)]);
             foreach ($this->getServer()->getOnlinePlayers() as $p2) {
                 $player->showplayer($p2);
