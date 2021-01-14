@@ -49,3 +49,7 @@ permissions:
   command.info:
     description: Allows player to use /info
     default: true
+
+  command.rules:
+    description: Allows player to use /rules
+    default: true
