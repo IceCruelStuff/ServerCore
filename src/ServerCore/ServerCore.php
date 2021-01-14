@@ -44,6 +44,7 @@ use ServerCore\command\HealCommand;
 use ServerCore\command\HubCommand;
 use ServerCore\command\InfoCommand;
 use ServerCore\command\PingCommand;
+use ServerCore\command\RulesCommand;
 use ServerCore\command\VanishCommand;
 use ServerCore\command\WarnCommand;
 use ServerCore\task\ScoreboardTask;
@@ -192,6 +193,7 @@ class ServerCore extends PluginBase implements Listener {
         $this->getServer()->getCommandMap()->register("hub", new HubCommand($this));
         $this->getServer()->getCommandMap()->register("info", new InfoCommand($this));
         $this->getServer()->getCommandMap()->register("ping", new PingCommand($this));
+        $this->getServer()->getCommandMap()->register("rules", new RulesCommand($this));
         $this->getServer()->getCommandMap()->register("vanish", new VanishCommand($this));
         $this->getServer()->getCommandMap()->register("warn", new WarnCommand($this));
     }
