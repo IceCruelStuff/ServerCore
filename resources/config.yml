@@ -21,4 +21,10 @@ Game-2-Z: 0
 Game-3-X: 0
 Game-3-Y: 0
 Game-3-Z: 0
+
+# Rules (you can add more to the list)
+rules:
+  - Rule 1
+  - Rule 2
+  - Rule 3
 ...
