@@ -53,3 +53,7 @@ permissions:
   command.rules:
     description: Allows player to use /rules
     default: true
+
+  command.smite:
+    description: Allows player to use /smite
+    default: true
