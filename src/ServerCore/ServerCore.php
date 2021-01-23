@@ -28,6 +28,7 @@ use pocketmine\network\mcpe\protocol\RemoveObjectivePacket;
 use pocketmine\network\mcpe\protocol\SetDisplayObjectivePacket;
 use pocketmine\network\mcpe\protocol\SetScorePacket;
 use pocketmine\network\mcpe\protocol\types\ScorePacketEntry;
+use pocketmine\permission\Permission;
 use pocketmine\plugin\PluginBase;
 use pocketmine\scheduler\TaskScheduler;
 use pocketmine\scheduler\Task;
@@ -74,6 +75,7 @@ class ServerCore extends PluginBase implements Listener {
     public function onEnable() : void {
         self::$instance = $this;
         $this->getServer()->getPluginManager()->registerEvents($this, $this);
+        $this->registerPermissions(); // register permissions before commands
         $this->registerCommands();
 
         @mkdir($this->getDataFolder());
@@ -183,6 +185,21 @@ class ServerCore extends PluginBase implements Listener {
 
     public function onLoad() : void {
         self::$instance = $this;
+    }
+
+    public function registerPermissions() {
+        $this->getServer()->getPluginManager()->addPermission(new Permission("command.warn", "Allows player to use /warn", Permission::DEFAULT_OP));
+        $this->getServer()->getPluginManager()->addPermission(new Permission("command.vanish", "Allows player to use /vanish", Permission::DEFAULT_OP));
+        $this->getServer()->getPluginManager()->addPermission(new Permission("command.forgive", "Allows player to use /forgive", Permission::DEFAULT_OP));
+        $this->getServer()->getPluginManager()->addPermission(new Permission("command.heal", "Allows player to use /heal", Permission::DEFAULT_OP));
+        $this->getServer()->getPluginManager()->addPermission(new Permission("command.clear", "Allows player to use /clear or /clearinv", Permission::DEFAULT_OP));
+        $this->getServer()->getPluginManager()->addPermission(new Permission("command.fly", "Allows player to use /fly", Permission::DEFAULT_OP));
+        $this->getServer()->getPluginManager()->addPermission(new Permission("command.feed", "Allows player to use /feed", Permission::DEFAULT_OP));
+        $this->getServer()->getPluginManager()->addPermission(new Permission("command.smite", "Allows player to use /smite", Permission::DEFAULT_OP));
+        $this->getServer()->getPluginManager()->addPermission(new Permission("command.info", "Allows player to use /info", Permission::DEFAULT_TRUE));
+        $this->getServer()->getPluginManager()->addPermission(new Permission("command.rules", "Allows player to use /rules", Permission::DEFAULT_TRUE));
+        $this->getServer()->getPluginManager()->addPermission(new Permission("command.ping", "Allows player to use /ping", Permission::DEFAULT_TRUE));
+        $this->getServer()->getPluginManager()->addPermission(new Permission("command.hub", "Allows player to use /hub or /lobby", Permission::DEFAULT_TRUE));
     }
 
     public function registerCommands() {
