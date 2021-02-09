@@ -26,6 +26,10 @@ class VisionCommand extends Command implements PluginIdentifiableCommand {
         $this->setPermission("command.vision");
     }
 
+    public function getPlugin() : Plugin {
+        return $this->plugin;
+    }
+
     public function execute(CommandSender $sender, string $label, array $args) {
         if (!$this->testPermission($sender)) {
             return;
