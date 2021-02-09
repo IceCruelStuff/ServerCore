@@ -1,6 +1,6 @@
 name: ServerCore
 main: ServerCore\ServerCore
-version: 2.1.1
+version: 2.1.2
 api: 3.15.0
 load: STARTUP
 author: IceCruelStuff
