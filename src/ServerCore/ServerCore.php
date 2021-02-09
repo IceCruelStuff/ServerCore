@@ -48,6 +48,7 @@ use ServerCore\command\PingCommand;
 use ServerCore\command\RulesCommand;
 use ServerCore\command\SmiteCommand;
 use ServerCore\command\VanishCommand;
+use ServerCore\command\VisionCommand;
 use ServerCore\command\WarnCommand;
 use ServerCore\task\ScoreboardTask;
 use onebone\economyapi\EconomyAPI;
@@ -71,6 +72,7 @@ class ServerCore extends PluginBase implements Listener {
     private $scoreboards = [];
 
     public $vanish = [];
+    public $vision = [];
 
     public function onEnable() : void {
         self::$instance = $this;
@@ -190,6 +192,7 @@ class ServerCore extends PluginBase implements Listener {
     public function registerPermissions() {
         $this->getServer()->getPluginManager()->addPermission(new Permission("command.warn", "Allows player to use /warn", Permission::DEFAULT_OP));
         $this->getServer()->getPluginManager()->addPermission(new Permission("command.vanish", "Allows player to use /vanish", Permission::DEFAULT_OP));
+        $this->getServer()->getPluginManager()->addPermission(new Permission("command.vision", "Allows player to use /vision", Permission::DEFAULT_OP));
         $this->getServer()->getPluginManager()->addPermission(new Permission("command.forgive", "Allows player to use /forgive", Permission::DEFAULT_OP));
         $this->getServer()->getPluginManager()->addPermission(new Permission("command.heal", "Allows player to use /heal", Permission::DEFAULT_OP));
         $this->getServer()->getPluginManager()->addPermission(new Permission("command.clear", "Allows player to use /clear or /clearinv", Permission::DEFAULT_OP));
@@ -214,6 +217,7 @@ class ServerCore extends PluginBase implements Listener {
         $this->getServer()->getCommandMap()->register("rules", new RulesCommand($this));
         $this->getServer()->getCommandMap()->register("smite", new SmiteCommand($this));
         $this->getServer()->getCommandMap()->register("vanish", new VanishCommand($this));
+        $this->getServer()->getCommandMap()->register("vision", new VisionCommand($this));
         $this->getServer()->getCommandMap()->register("warn", new WarnCommand($this));
     }
 
