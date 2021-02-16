@@ -65,6 +65,7 @@ class ServerCore extends PluginBase implements Listener {
     public $music;
     public $killChat;
     public $warnedPlayers;
+    public $mutedPlayers;
     public $prefix = TextFormat::GRAY . "[" . TextFormat::AQUA . "ServerCore" . TextFormat::GRAY . "] ";
 
     private static $instance;
@@ -83,6 +84,9 @@ class ServerCore extends PluginBase implements Listener {
         @mkdir($this->getDataFolder());
         $this->saveResource("warnedPlayers.txt");
         $this->warnedPlayers = new Config($this->getDataFolder() . "warnedPlayers.txt", Config::ENUM);
+
+        $this->saveResource("mutedPlayers.txt");
+        $this->mutedPlayers = new Config($this->getDataFolder() . "mutedPlayers.txt", Config::ENUM);
 
         if (!file_exists($this->getDataFolder() . "config.yml")) {
             $this->saveResource("config.yml");
