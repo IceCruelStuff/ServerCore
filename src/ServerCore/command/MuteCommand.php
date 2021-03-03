@@ -33,7 +33,11 @@ class MuteCommand extends Command implements PluginIdentifiableCommand {
             return;
         }
 
-        // TODO
+        if (isset($args[0])) {
+            // TODO
+        } else {
+            $sender->sendMessage(TextFormat::RED . "Please enter a player name");
+        }
     }
 
 }
