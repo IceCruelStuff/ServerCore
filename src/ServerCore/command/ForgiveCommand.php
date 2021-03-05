@@ -49,6 +49,8 @@ class ForgiveCommand extends Command implements PluginIdentifiableCommand {
             } else {
                 $sender->sendMessage(TextFormat::RED . "Player has not been warned before");
             }
+        } else {
+            $sender->sendMessage(TextFormat::RED . "Please enter a player name");
         }
     }
 
