@@ -60,6 +60,7 @@ class WarnCommand extends Command implements PluginIdentifiableCommand {
                     $player->sendMessage(TextFormat::DARK_RED . $this->plugin->prefix . " Admin Warning: " . $message);
                     $sender->sendMessage(TextFormat::DARK_GREEN . $this->plugin->prefix . " " . $player->getName() . " was warned.");
                     $this->plugin->warnedPlayers->set($name);
+                    $this->plugin->warnedPlayers->save();
                 }
             }
         } else {
