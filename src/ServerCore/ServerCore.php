@@ -44,9 +44,11 @@ use ServerCore\command\ForgiveCommand;
 use ServerCore\command\HealCommand;
 use ServerCore\command\HubCommand;
 use ServerCore\command\InfoCommand;
+use ServerCore\command\MuteCommand;
 use ServerCore\command\PingCommand;
 use ServerCore\command\RulesCommand;
 use ServerCore\command\SmiteCommand;
+use ServerCore\command\UnmuteCommand;
 use ServerCore\command\VanishCommand;
 use ServerCore\command\VisionCommand;
 use ServerCore\command\WarnCommand;
@@ -207,6 +209,8 @@ class ServerCore extends PluginBase implements Listener {
         $this->getServer()->getPluginManager()->addPermission(new Permission("command.rules", "Allows player to use /rules", Permission::DEFAULT_TRUE));
         $this->getServer()->getPluginManager()->addPermission(new Permission("command.ping", "Allows player to use /ping", Permission::DEFAULT_TRUE));
         $this->getServer()->getPluginManager()->addPermission(new Permission("command.hub", "Allows player to use /hub or /lobby", Permission::DEFAULT_TRUE));
+        $this->getServer()->getPluginManager()->addPermission(new Permission("command.mute", "Allows player to use /mute", Permission::DEFAULT_OP));
+        $this->getServer()->getPluginManager()->addPermission(new Permission("command.unmute", "Allows player to use /unmute", Permission::DEFAULT_OP));
     }
 
     public function registerCommands() {
@@ -217,9 +221,11 @@ class ServerCore extends PluginBase implements Listener {
         $this->getServer()->getCommandMap()->register("heal", new HealCommand($this));
         $this->getServer()->getCommandMap()->register("hub", new HubCommand($this));
         $this->getServer()->getCommandMap()->register("info", new InfoCommand($this));
+        $this->getServer()->getCommandMap()->register("mute", new MuteCommand($this));
         $this->getServer()->getCommandMap()->register("ping", new PingCommand($this));
         $this->getServer()->getCommandMap()->register("rules", new RulesCommand($this));
         $this->getServer()->getCommandMap()->register("smite", new SmiteCommand($this));
+        $this->getServer()->getCommandMap()->register("unmute", new UnmuteCommand($this));
         $this->getServer()->getCommandMap()->register("vanish", new VanishCommand($this));
         $this->getServer()->getCommandMap()->register("vision", new VisionCommand($this));
         $this->getServer()->getCommandMap()->register("warn", new WarnCommand($this));
