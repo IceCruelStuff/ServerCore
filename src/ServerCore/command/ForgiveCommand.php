@@ -36,6 +36,7 @@ class ForgiveCommand extends Command implements PluginIdentifiableCommand {
         if (isset($args[0])) {
             if ($this->plugin->warnedPlayers->exists($args[0])) {
                 $this->plugin->warnedPlayers->remove($args[0]);
+                $this->plugin->warnedPlayers->save();
                 $player = $this->plugin->getServer()->getPlayer($args[0]);
                 $action = strtolower($this->plugin->warnedPlayers->get("Action"));
                 if ($action === "ban") {
