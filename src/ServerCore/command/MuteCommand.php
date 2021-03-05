@@ -42,7 +42,8 @@ class MuteCommand extends Command implements PluginIdentifiableCommand {
                     if (isset($args[1])) {
                         $this->plugin->mutedPlayers->set($args[0]);
                         $this->plugin->mutedPlayers->save();
-                        $player->sendMessage(TextFormat::RED . "You have been muted. Reason: " . $args[1]);
+                        $reason = implode(" ", $args);
+                        $player->sendMessage(TextFormat::RED . "You have been muted. Reason: " . $reason);
                         $sender->sendMessage(TextFormat::DARK_GREEN . $this->plugin->prefix . $player->getName() . " was muted");
                     } else {
                         $sender->sendMessage(TextFormat::RED . "Please enter the reason");
