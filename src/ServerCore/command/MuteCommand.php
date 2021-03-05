@@ -34,7 +34,23 @@ class MuteCommand extends Command implements PluginIdentifiableCommand {
         }
 
         if (isset($args[0])) {
-            // TODO
+            if ($this->plugin->getServer()-getPlayer($args[0])) {
+                $player = $this->plugin->getServer()->getPlayer($args[0]);
+                if ($this->plugin->mutedPlayers->exists($args[0])) {
+                    $sender->sendMessage(TextFormat::RED . "That player is already muted");
+                } else {
+                    if (isset($args[1])) {
+                        $this->plugin->mutedPlayers->set($args[0]);
+                        $this->plugin->mutedPlayers->save();
+                        $player->sendMessage(TextFormat::RED . "You have been muted. Reason: " . $args[1]);
+                        $sender->sendMessage(TextFormat::DARK_GREEN . $this->plugin->prefix . $player->getName() . " was muted");
+                    } else {
+                        $sender->sendMessage(TextFormat::RED . "Please enter the reason");
+                    }
+                }
+            } else {
+                $sender->sendMessage(TextFormat::RED . "Player not found");
+            }
         } else {
             $sender->sendMessage(TextFormat::RED . "Please enter a player name");
         }
