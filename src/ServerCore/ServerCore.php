@@ -475,7 +475,7 @@ class ServerCore extends PluginBase implements Listener {
 
     public function onPlayerChat(PlayerChatEvent $event) {
         $player = $event->getPlayer();
-        if (isset($this->mutedPlayers->exists($player->getName()))) {
+        if ($this->mutedPlayers->exists($player->getName())) {
             $player->sendMessage(TextFormat::RED . "You are muted");
             $event->setCancelled();
         }
