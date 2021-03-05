@@ -39,7 +39,7 @@ class UnmuteCommand extends Command implements PluginIdentifiableCommand {
                 $this->plugin->mutedPlayers->save();
                 $sender->sendMessage(TextFormat::GREEN . $args[0] . " has been unmuted");
                 $player = $this->plugin->getServer()->getPlayer($args[0]);
-                if ($player->isOnline()) {
+                if ($player !== null) {
                     $player->sendMessage(TextFormat::GREEN . "You have been unmuted");
                 }
             } else {
