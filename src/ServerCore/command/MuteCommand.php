@@ -34,7 +34,7 @@ class MuteCommand extends Command implements PluginIdentifiableCommand {
         }
 
         if (isset($args[0])) {
-            if ($this->plugin->getServer()-getPlayer($args[0])) {
+            if ($this->plugin->getServer()->getPlayer($args[0])) {
                 $player = $this->plugin->getServer()->getPlayer($args[0]);
                 if ($this->plugin->mutedPlayers->exists($args[0])) {
                     $sender->sendMessage(TextFormat::RED . "That player is already muted");
