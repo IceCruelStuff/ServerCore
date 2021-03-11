@@ -15,6 +15,10 @@ An advanced server core for PocketMine-MP.
 - [PurePerms](https://poggit.pmmp.io/p/PurePerms)
 - [EconomyAPI](https://poggit.pmmp.io/p/EconomyAPI)
 
+These plugins are optional:
+- [FactionsPro](https://github.com/poggit-orphanage/FactionsPro)
+- [ZMusicBox](https://github.com/EnderLands/ZMusicBox)
+- [KillChat](https://github.com/EnderLands/KillChat)
 
 ```
 Copyright 2020 IceCruelStuff
