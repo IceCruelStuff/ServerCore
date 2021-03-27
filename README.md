@@ -9,7 +9,7 @@
 An advanced server core for PocketMine-MP.
 
 ## Download
-[![Download](https://img.shields.io/badge/download-latest-blue.svg)](https://github.com/IceCruelStuff/ServerCore/releases/latest/download/ServerCore.phar)
+[![Download](https://img.shields.io/badge/download-latest-blue.svg)](https://github.com/IceCruelStuff/ServerCore/releases/latest/)
 
 **Note: you will need to have `PurePerms` and `EconomyAPI` plugins on your server.**
 - [PurePerms](https://poggit.pmmp.io/p/PurePerms)
