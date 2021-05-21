@@ -46,6 +46,7 @@ use ServerCore\command\HubCommand;
 use ServerCore\command\InfoCommand;
 use ServerCore\command\MuteCommand;
 use ServerCore\command\PingCommand;
+use ServerCore\command\PositionCommand;
 use ServerCore\command\RulesCommand;
 use ServerCore\command\SmiteCommand;
 use ServerCore\command\UnmuteCommand;
@@ -211,6 +212,7 @@ class ServerCore extends PluginBase implements Listener {
         $this->getServer()->getPluginManager()->addPermission(new Permission("command.hub", "Allows player to use /hub or /lobby", Permission::DEFAULT_TRUE));
         $this->getServer()->getPluginManager()->addPermission(new Permission("command.mute", "Allows player to use /mute", Permission::DEFAULT_OP));
         $this->getServer()->getPluginManager()->addPermission(new Permission("command.unmute", "Allows player to use /unmute", Permission::DEFAULT_OP));
+        $this->getServer()->getPluginManager()->addPermission(new Permission("command.pos", "Allows player to use /position", Permission::DEFAULT_TRUE));
     }
 
     public function registerCommands() {
@@ -223,6 +225,7 @@ class ServerCore extends PluginBase implements Listener {
         $this->getServer()->getCommandMap()->register("info", new InfoCommand($this));
         $this->getServer()->getCommandMap()->register("mute", new MuteCommand($this));
         $this->getServer()->getCommandMap()->register("ping", new PingCommand($this));
+        $this->getServer()->getCommandMap()->register("position", new PositionCommand($this));
         $this->getServer()->getCommandMap()->register("rules", new RulesCommand($this));
         $this->getServer()->getCommandMap()->register("smite", new SmiteCommand($this));
         $this->getServer()->getCommandMap()->register("unmute", new UnmuteCommand($this));
