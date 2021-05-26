@@ -146,47 +146,6 @@ class ServerCore extends PluginBase implements Listener {
         } else {
             $this->getLogger()->info(TextFormat::RED . "KillChat plugin is not installed. Some features may be disabled.");
         }
-        // $this->kills = $this->killChat->getKills($name);
-        // $this->deaths = $this->killChat->getDeaths($name);
-
-        /*foreach ($this->getServer()->getOnlinePlayers() as $player) {
-            // $player = $p->getPlayer();
-            $name = $player->getName();
-
-            if ($this->config->get("enable-music") == true) {
-                $this->music = $this->getServer()->getPluginManager()->getPlugin("ZMusicBox");
-            } else {
-                $this->music = null;
-            }
-
-            if ($this->getServer()->getPluginManager()->getPlugin("FactionsPro")) {
-                $this->faction = $this->getServer()->getPluginManager()->getPlugin("FactionsPro")->getPlayerFaction($player->getName());
-            } else {
-                $this->getLogger()->info(TextFormat::RED . 'FactionsPro plugin is not installed. Some features may be disabled.');
-            }
-
-            if ($this->getServer()->getPluginManager()->getPlugin("PurePerms")) {
-                $this->group = $this->getServer()->getPluginManager()->getPlugin("PurePerms")->getUserDataMgr()->getGroup($player)->getName();
-            } else {
-                $this->getLogger()->info(TextFormat::RED . 'PurePerms plugin is not installed. Some features may be disabled.');
-            }
-
-            if ($this->getServer()->getPluginManager()->getPlugin("EconomyAPI")) {
-                $this->money = EconomyAPI::getInstance()->myMoney($player);
-                //$this->money = $this->getServer()->getPluginManager()->getPlugin("EconomyAPI")->myMoney($player);
-            } else {
-                $this->getLogger()->info(TextFormat::RED . 'EconomyAPI plugin is not installed. Some features may be disabled.');
-            }
-
-            if ($this->getServer()->getPluginManager()->getPlugin("KillChat") !== null) {
-                $api = $this->getServer()->getPluginManager()->getPlugin("KillChat");
-                $this->kills = $api->getKills($name);
-                $this->deaths = $api->getDeaths($name);
-            } else {
-                $this->kills = null;
-                $this->deaths = null;
-            }
-        }*/
         $this->config->save();
         $this->warnedPlayers->save();
     }
@@ -262,7 +221,7 @@ class ServerCore extends PluginBase implements Listener {
     }
 
     public function getObjectiveName(Player $player) : ?string {
-        $this->scoreboard->getObjectiveName($player);
+        return $this->scoreboard->getObjectiveName($player);
     }
 
     public function getMainItems(Player $player) {
