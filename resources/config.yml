@@ -1,17 +1,14 @@
 ---
 # Commands:
-
 info-ranks-command: "MVP: $5"
 info-servers-command: "Welcome to our server!"
 
 # Item names (for teleport/warp items):
-
 Game-1-name: Game1
 Game-2-name: Game2
 Game-3-name: Game3
 
 # Positions (for teleport/warp items):
-
 Game-1-X: 0
 Game-1-Y: 0
 Game-1-Z: 0
@@ -27,4 +24,6 @@ rules:
   - No cheating or exploiting
   - No spamming
   - Respect all players
+
+enable-ui: true
 ...
