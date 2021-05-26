@@ -53,6 +53,7 @@ use ServerCore\command\UnmuteCommand;
 use ServerCore\command\VanishCommand;
 use ServerCore\command\VisionCommand;
 use ServerCore\command\WarnCommand;
+use ServerCore\scoreboard\Scoreboard;
 use ServerCore\task\ScoreboardTask;
 use onebone\economyapi\EconomyAPI;
 
@@ -77,9 +78,11 @@ class ServerCore extends PluginBase implements Listener {
 
     public $vanish = [];
     public $vision = [];
+    public $scoreboard;
 
     public function onEnable() : void {
         self::$instance = $this;
+        $this->scoreboard = new Scoreboard();
         $this->getServer()->getPluginManager()->registerEvents($this, $this);
         $this->registerPermissions(); // register permissions before commands
         $this->registerCommands();
@@ -143,47 +146,6 @@ class ServerCore extends PluginBase implements Listener {
         } else {
             $this->getLogger()->info(TextFormat::RED . "KillChat plugin is not installed. Some features may be disabled.");
         }
-        // $this->kills = $this->killChat->getKills($name);
-        // $this->deaths = $this->killChat->getDeaths($name);
-
-        /*foreach ($this->getServer()->getOnlinePlayers() as $player) {
-            // $player = $p->getPlayer();
-            $name = $player->getName();
-
-            if ($this->config->get("enable-music") == true) {
-                $this->music = $this->getServer()->getPluginManager()->getPlugin("ZMusicBox");
-            } else {
-                $this->music = null;
-            }
-
-            if ($this->getServer()->getPluginManager()->getPlugin("FactionsPro")) {
-                $this->faction = $this->getServer()->getPluginManager()->getPlugin("FactionsPro")->getPlayerFaction($player->getName());
-            } else {
-                $this->getLogger()->info(TextFormat::RED . 'FactionsPro plugin is not installed. Some features may be disabled.');
-            }
-
-            if ($this->getServer()->getPluginManager()->getPlugin("PurePerms")) {
-                $this->group = $this->getServer()->getPluginManager()->getPlugin("PurePerms")->getUserDataMgr()->getGroup($player)->getName();
-            } else {
-                $this->getLogger()->info(TextFormat::RED . 'PurePerms plugin is not installed. Some features may be disabled.');
-            }
-
-            if ($this->getServer()->getPluginManager()->getPlugin("EconomyAPI")) {
-                $this->money = EconomyAPI::getInstance()->myMoney($player);
-                //$this->money = $this->getServer()->getPluginManager()->getPlugin("EconomyAPI")->myMoney($player);
-            } else {
-                $this->getLogger()->info(TextFormat::RED . 'EconomyAPI plugin is not installed. Some features may be disabled.');
-            }
-
-            if ($this->getServer()->getPluginManager()->getPlugin("KillChat") !== null) {
-                $api = $this->getServer()->getPluginManager()->getPlugin("KillChat");
-                $this->kills = $api->getKills($name);
-                $this->deaths = $api->getDeaths($name);
-            } else {
-                $this->kills = null;
-                $this->deaths = null;
-            }
-        }*/
         $this->config->save();
         $this->warnedPlayers->save();
     }
@@ -247,54 +209,19 @@ class ServerCore extends PluginBase implements Listener {
     }
 
     public function new(Player $player, string $objectiveName, string $displayName) : void {
-        if (isset($this->scoreboards[$player->getName()])) {
-            $this->remove($player);
-        }
-
-        $pk = new SetDisplayObjectivePacket();
-        $pk->displaySlot = "sidebar";
-        $pk->objectiveName = $objectiveName;
-        $pk->displayName = $displayName;
-        $pk->criteriaName = "dummy";
-        $pk->sortOrder = 0;
-        $player->sendDataPacket($pk);
-        $this->scoreboards[$player->getName()] = $objectiveName;
+        $this->scoreboard->new($player, $objectiveName, $displayName);
     }
 
     public function remove(Player $player) : void {
-        $objectiveName = $this->getObjectiveName($player);
-        $pk = new RemoveObjectivePacket();
-        $pk->objectiveName = $objectiveName;
-        $player->sendDataPacket($pk);
-        unset($this->scoreboards[$player->getName()]);
+        $this->scoreboard->remove($player);
     }
 
     public function setLine(Player $player, int $score, string $message) : void {
-        if (!isset($this->scoreboards[$player->getName()])) {
-            $this->getLogger()->error("Cannot set a score to a player with no scoreboard");
-            return;
-        }
-
-        if ($score > 15 || $score < 1) {
-            $this->getLogger()->error("Score must be between the value of 1-15. $score out of range");
-            return;
-        }
-
-        $objectiveName = $this->getObjectiveName($player);
-        $entry = new ScorePacketEntry();
-        $entry->objectiveName = $objectiveName;
-        $entry->type = $entry::TYPE_FAKE_PLAYER;
-        $entry->customName = $message;
-        $entry->score = $score;
-        $entry->scoreboardId = $score;
-        $pk = new SetScorePacket();
-        $pk->type = $pk::TYPE_CHANGE;
-        $pk->entries[] = $entry;
-        $player->sendDataPacket($pk);
+        $this->scoreboard->setLine($player, $score, $message);
     }
 
     public function getObjectiveName(Player $player) : ?string {
-        return isset($this->scoreboards[$player->getName()]) ? $this->scoreboards[$player->getName()] : null;
+        return $this->scoreboard->getObjectiveName($player);
     }
 
     public function getMainItems(Player $player) {
@@ -337,7 +264,7 @@ class ServerCore extends PluginBase implements Listener {
         $player->setGamemode(2);
         $player->teleport(new Vector3($x, $y, $z));
         $this->getMainItems($player);
-        if ($player->isOP()) {
+        if ($player->isOp()) {
             $event->setJoinMessage(C::RED . $name . C::AQUA . " has joined the game");
         } else {
             $event->setJoinMessage("");
@@ -350,7 +277,7 @@ class ServerCore extends PluginBase implements Listener {
         }
         $player = $event->getPlayer();
         $name = $player->getName();
-        if ($player->isOP()) {
+        if ($player->isOp()) {
             $event->setQuitMessage(C::YELLOW . $name . " has left the game");
         } else {
             $event->setQuitMessage("");
