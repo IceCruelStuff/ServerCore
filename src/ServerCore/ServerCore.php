@@ -140,7 +140,6 @@ class ServerCore extends PluginBase implements Listener {
         }
         $this->group = $this->getServer()->getPluginManager()->getPlugin("PurePerms");
         $this->money = EconomyAPI::getInstance();
-        // $this->money = $this->getServer()->getPluginManager()->getPlugin("EconomyAPI");
         if ($this->getServer()->getPluginManager()->getPlugin("KillChat") !== null) {
             $this->killChat = $this->getServer()->getPluginManager()->getPlugin("KillChat");
         } else {
@@ -224,16 +223,20 @@ class ServerCore extends PluginBase implements Listener {
         return $this->scoreboard->getObjectiveName($player);
     }
 
-    public function getMainItems(Player $player) {
+    public function giveMainItems(Player $player) {
         $player->getInventory()->clearAll();
-        $player->getInventory()->setItem(0, Item::get(345)->setCustomName(C::BOLD . C::GOLD . "Teleporter"));
-        $player->getInventory()->setItem(2, Item::get(339)->setCustomName(C::BOLD . C::GOLD . "Info"));
-        $player->getInventory()->setItem(4, Item::get(288)->setCustomName(C::BOLD . C::GRAY . "Enable Fly Mode"));
-        $player->getInventory()->setItem(6, Item::get(280)->setCustomName(C::BOLD . C::YELLOW . "Hide players"));
-        $player->getInventory()->setItem(8, Item::get(360)->setCustomName(C::BOLD . C::BLUE . "Next Song"));
-        $player->removeAllEffects();
-        $player->getPlayer()->setHealth(20);
-        $player->getPlayer()->setFood(20);
+        if ($this->config->get("enable-ui")) {
+            $player->getInventory()->setItem(0, Item::get(Item::COMPASS)->setCustomName(C::BOLD . C::BLUE . "Menu"));
+        } else {
+            $player->getInventory()->setItem(0, Item::get(345)->setCustomName(C::BOLD . C::GOLD . "Teleporter"));
+            $player->getInventory()->setItem(2, Item::get(339)->setCustomName(C::BOLD . C::GOLD . "Info"));
+            $player->getInventory()->setItem(4, Item::get(288)->setCustomName(C::BOLD . C::GRAY . "Enable Fly Mode"));
+            $player->getInventory()->setItem(6, Item::get(280)->setCustomName(C::BOLD . C::YELLOW . "Hide players"));
+            $player->getInventory()->setItem(8, Item::get(360)->setCustomName(C::BOLD . C::BLUE . "Next Song"));
+            $player->removeAllEffects();
+            $player->setHealth($player->getMaxHealth());
+            $player->setFood($player->getMaxFood());
+        }
     }
 
     public function onDeath(PlayerDeathEvent $event) {
@@ -263,7 +266,7 @@ class ServerCore extends PluginBase implements Listener {
         $z = $spawn->getZ() + 0.5;
         $player->setGamemode(2);
         $player->teleport(new Vector3($x, $y, $z));
-        $this->getMainItems($player);
+        $this->giveMainItems($player);
         if ($player->isOp()) {
             $event->setJoinMessage(C::RED . $name . C::AQUA . " has joined the game");
         } else {
@@ -294,54 +297,72 @@ class ServerCore extends PluginBase implements Listener {
         $game2 = $this->config->get("Game-2-name");
         $game3 = $this->config->get("Game-3-name");
 
-        if ($item->getName() == C::BOLD . C::GOLD . "Teleporter") {
-            $this->teleportItems($player);
-        } else if ($item->getName() == C::BOLD . C::GOLD . "Info") {
-            $player->sendMessage($this->prefix . TextFormat::GREEN . "Usage: /info <ranks|server>");
-        } else if ($item->getName() == C::BOLD . C::RED . "Enable Fly Mode") {
-            $player->setAllowFlight(true);
-            $player->getInventory()->remove(Item::get(288)->setCustomName(C::BOLD . C::BLUE . "Enable Fly Mode"));
-            $player->getInventory()->setItem(4, Item::get(288)->setCustomName(C::BOLD . C::BLUE . "Disable Fly Mode"));
-        } else if ($item->getName() == C::BOLD . C::BLUE . "Disable Fly Mode") {
-            $player->setAllowFlight(false);
-            $player->getInventory()->remove(Item::get(288)->setCustomName(C::BOLD . C::BLUE . "Disable Fly Mode"));
-            $player->getInventory()->setItem(4, Item::get(288)->setCustomName(C::BOLD . C::BLUE . "Enable Fly Mode"));
-        } else if ($item->getName() == C::BOLD . C::RED . "Back") {
-            $this->getMainItems($player);
-        } else if ($item->getCustomName() == C::BOLD . C::GREEN . $game1) {
-            $this->getMainItems($player);
-            $x = $this->config->get("Game-1-X");
-            $y = $this->config->get("Game-1-Y");
-            $z = $this->config->get("Game-1-Z");
-            $player->teleport(new Vector3($x, $y, $z));
-        } else if ($item->getCustomName() == C::BOLD . C::GREEN . $game2) {
-            $this->getMainItems($player);
-            $x = $this->config->get("Game-2-X");
-            $y = $this->config->get("Game-2-Y");
-            $z = $this->config->get("Game-2-Z");
-        } else if ($item->getCustomName() == C::BOLD . C::GREEN . $game3) {
-            $this->getMainItems($player);
-            $x = $this->config->get("Game-3-X");
-            $y = $this->config->get("Game-3-Y");
-            $z = $this->config->get("Game-3-Z");
-        } else if ($item->getCustomName() == TextFormat::YELLOW . "Player Hiding") {
-            $player->getInventory()->remove(Item::get(280)->setCustomName(TextFormat::YELLOW . "Players Hiding"));
-            $player->getInventory()->setItem(6, Item::get(369)->setCustomName(TextFormat::YELLOW . "Players Show"));
-            $player->sendMessage($this->prefix . TextFormat::GREEN . "All players are now invisible!");
-            $this->hideAll[] = $player;
-            foreach ($this->getServer()->getOnlinePlayers() as $p2) {
-                $player->hideplayer($p2);
+        if ($this->config->get("enable-ui")) {
+            if ($item->getName() == TextFormat::BOLD . TextFormat::BLUE . "Menu") {
+                // TODO
             }
-        } else if ($item->getCustomName() == TextFormat::YELLOW . "Players Show") {
-            $player->getInventory()->remove(Item::get(369)->setCustomName(TextFormat::YELLOW . "Players Show"));
-            $player->getInventory()->setItem(6, Item::get(280)->setCustomName(TextFormat::YELLOW . "Player Hiding"));
-            $player->sendMessage($this->prefix . TextFormat::GREEN . "All players are now visible!");
-            unset($this->hideAll[array_search($player, $this->hideAll)]);
-            foreach ($this->getServer()->getOnlinePlayers() as $p2) {
-                $player->showplayer($p2);
+        } else {
+            switch ($item->getName()) {
+                case TextFormat::BOLD . TextFormat::GOLD . "Teleporter":
+                    $this->teleportItems($player);
+                    break;
+                case TextFormat::BOLD . TextFormat::GOLD . "Info":
+                    $player->sendMessage($this->prefix . TextFormat::GREEN . "Usage: /info <ranks|server>");
+                    break;
+                case TextFormat::BOLD . TextFormat::RED . "Enable Fly Mode":
+                    $player->setAllowFlight(true);
+                    $player->getInventory()->remove(Item::get(Item::FEATHER)->setCustomName(TextFormat::BOLD . TextFormat::BLUE . "Enable Fly Mode"));
+                    $player->getInventory()->setItem(4, Item::get(Item::FEATHER)->setCustomName(TextFormat::BOLD . TextFormat::BLUE . "Disable Fly Mode"));
+                    break;
+                case TextFormat::BOLD . TextFormat::BLUE . "Disable Fly Mode":
+                    $player->setAllowFlight(false);
+                    $player->getInventory()->remove(Item::get(Item::FEATHER)->setCustomName(TextFormat::BOLD . TextFormat::BLUE . "Disable Fly Mode"));
+                    $player->getInventory()->setItem(4, Item::get(Item::FEATHER)->setCustomName(TextFormat::BOLD . TextFormat::BLUE . "Enable Fly Mode"));
+                    break;
+                case TextFormat::BOLD . TextFormat::RED . "Back":
+                    $this->giveMainItems($player);
+                    break;
+                case TextFormat::BOLD . TextFormat::GREEN . $game1:
+                    $this->giveMainItems($player);
+                    $x = $this->config->get("Game-1-X");
+                    $y = $this->config->get("Game-1-Y");
+                    $z = $this->config->get("Game-1-Z");
+                    $player->teleport(new Vector3($x, $y, $z));
+                    break;
+                case TextFormat::BOLD . TextFormat::GREEN . $game2:
+                    $this->giveMainItems($player);
+                    $x = $this->config->get("Game-2-X");
+                    $y = $this->config->get("Game-2-Y");
+                    $z = $this->config->get("Game-2-Z");
+                    break;
+                case TextFormat::BOLD . TextFormat::GREEN . $game3:
+                    $this->giveMainItems($player);
+                    $x = $this->config->get("Game-3-X");
+                    $y = $this->config->get("Game-3-Y");
+                    $z = $this->config->get("Game-3-Z");
+                    break;
+                case TextFormat::YELLOW . "Hide Players":
+                    $player->getInventory()->remove(Item::get(Item::STICK)->setCustomName(TextFormat::YELLOW . "Hide Players"));
+                    $player->getInventory()->setItem(6, Item::get(Item::BLAZE_ROD)->setCustomName(TextFormat::YELLOW . "Show Players"));
+                    $this->hideAll[] = $player;
+                    foreach ($this->getServer()->getOnlinePlayers() as $onlinePlayer) {
+                        $player->hidePlayer($onlinePlayer);
+                    }
+                    $player->sendMessage($this->prefix . TextFormat::GREEN . "All players are now invisible!");
+                    break;
+                case TextFormat::YELLOW . "Show Players":
+                    $player->getInventory()->remove(Item::get(Item::BLAZE_ROD)->setCustomName(TextFormat::YELLOW . "Show Players"));
+                    $player->getInventory()->setItem(6, Item::get(Item::STICK)->setCustomName(TextFormat::YELLOW . "Hide Players"));
+                    unset($this->hideAll[array_search($player, $this->hideAll)]);
+                    foreach ($this->getServer()->getOnlinePlayers() as $onlinePlayer) {
+                        $player->showplayer($onlinePlayer);
+                    }
+                    $player->sendMessage($this->prefix . TextFormat::GREEN . "All players are now visible!");
+                    break;
+                case TextFormat::BOLD . TextFormat::GREEN . "Next Song":
+                    $this->music->startNewTask();
+                    break;
             }
-        } else if ($item->getCustomName() == C::BOLD . C::GREEN . "Next Song") {
-            $this->music->startNewTask();
         }
     }
 
