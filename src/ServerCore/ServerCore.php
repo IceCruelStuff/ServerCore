@@ -56,6 +56,7 @@ use ServerCore\command\WarnCommand;
 use ServerCore\scoreboard\Scoreboard;
 use ServerCore\task\ScoreboardTask;
 use onebone\economyapi\EconomyAPI;
+use jojoe77777\FormAPI\SimpleForm;
 
 class ServerCore extends PluginBase implements Listener {
 
@@ -225,22 +226,14 @@ class ServerCore extends PluginBase implements Listener {
 
     public function giveMainItems(Player $player) {
         $player->getInventory()->clearAll();
-        if ($this->config->get("enable-ui")) {
-            $player->getInventory()->setItem(0, Item::get(Item::COMPASS)->setCustomName(C::BOLD . C::BLUE . "Menu"));
-        } else {
-            $player->getInventory()->setItem(0, Item::get(345)->setCustomName(C::BOLD . C::GOLD . "Teleporter"));
-            $player->getInventory()->setItem(2, Item::get(339)->setCustomName(C::BOLD . C::GOLD . "Info"));
-            $player->getInventory()->setItem(4, Item::get(288)->setCustomName(C::BOLD . C::GRAY . "Enable Fly Mode"));
-            $player->getInventory()->setItem(6, Item::get(280)->setCustomName(C::BOLD . C::YELLOW . "Hide players"));
-            $player->getInventory()->setItem(8, Item::get(360)->setCustomName(C::BOLD . C::BLUE . "Next Song"));
-            $player->removeAllEffects();
-            $player->setHealth($player->getMaxHealth());
-            $player->setFood($player->getMaxFood());
-        }
-    }
-
-    public function onDeath(PlayerDeathEvent $event) {
-        $event->setDeathMessage("");
+        $player->getInventory()->setItem(0, Item::get(Item::COMPASS)->setCustomName(TextFormat::BOLD . TextFormat::GOLD . "Teleporter"));
+        $player->getInventory()->setItem(2, Item::get(Item::PAPER)->setCustomName(TextFormat::BOLD . TextFormat::GOLD . "Info"));
+        $player->getInventory()->setItem(4, Item::get(Item::FEATHER)->setCustomName(TextFormat::BOLD . TextFormat::GRAY . "Enable Fly Mode"));
+        $player->getInventory()->setItem(6, Item::get(Item::STICK)->setCustomName(TextFormat::BOLD . TextFormat::YELLOW . "Hide players"));
+        $player->getInventory()->setItem(8, Item::get(Item::MELON)->setCustomName(TextFormat::BOLD . TextFormat::BLUE . "Next Song"));
+        $player->removeAllEffects();
+        $player->setHealth($player->getMaxHealth());
+        $player->setFood($player->getMaxFood());
     }
 
     public function teleportItems(Player $player) {
@@ -248,13 +241,17 @@ class ServerCore extends PluginBase implements Listener {
         $game1 = $this->config->get("Game-1-name");
         $game2 = $this->config->get("Game-2-name");
         $game3 = $this->config->get("Game-3-name");
-        $player->getInventory()->setItem(4, Item::get(399)->setCustomName(C::BOLD . C::BLUE . $game1));
-        $player->getInventory()->setItem(8, Item::get(355)->setCustomName(C::BOLD . C::RED . "Back"));
-        $player->getInventory()->setItem(0, Item::get(378)->setCustomName(C::BOLD . C::GOLD . $game2));
-        $player->getInventory()->setItem(2, Item::get(381)->setCustomName(C::BOLD . C::GREEN . $game3));
+        $player->getInventory()->setItem(4, Item::get(Item::NETHER_STAR)->setCustomName(TextFormat::BOLD . TextFormat::BLUE . $game1));
+        $player->getInventory()->setItem(8, Item::get(Item::BED)->setCustomName(TextFormat::BOLD . TextFormat::RED . "Back"));
+        $player->getInventory()->setItem(0, Item::get(Item::MAGMA_CREAM)->setCustomName(TextFormat::BOLD . TextFormat::GOLD . $game2));
+        $player->getInventory()->setItem(2, Item::get(Item::ENDER_EYE)->setCustomName(TextFormat::BOLD . TextFormat::GREEN . $game3));
         $player->removeAllEffects();
-        $player->getPlayer()->setHealth(20);
-        $player->getPlayer()->setFood(20);
+        $player->setHealth($player->getMaxHealth());
+        $player->setFood($player->getMaxFood());
+    }
+
+    public function onDeath(PlayerDeathEvent $event) {
+        $event->setDeathMessage("");
     }
 
     public function onJoin(PlayerJoinEvent $event) {
@@ -268,7 +265,7 @@ class ServerCore extends PluginBase implements Listener {
         $player->teleport(new Vector3($x, $y, $z));
         $this->giveMainItems($player);
         if ($player->isOp()) {
-            $event->setJoinMessage(C::RED . $name . C::AQUA . " has joined the game");
+            $event->setJoinMessage(TextFormat::RED . $name . TextFormat::AQUA . " has joined the game");
         } else {
             $event->setJoinMessage("");
         }
@@ -281,7 +278,7 @@ class ServerCore extends PluginBase implements Listener {
         $player = $event->getPlayer();
         $name = $player->getName();
         if ($player->isOp()) {
-            $event->setQuitMessage(C::YELLOW . $name . " has left the game");
+            $event->setQuitMessage(TextFormat::YELLOW . $name . " has left the game");
         } else {
             $event->setQuitMessage("");
         }
@@ -291,7 +288,7 @@ class ServerCore extends PluginBase implements Listener {
         $player = $event->getPlayer();
         $name = $player->getName();
         $item = $player->getInventory()->getItemInHand();
-        $itemId = $item->getID();
+        $itemId = $item->getId();
         $block = $event->getBlock();
         $game1 = $this->config->get("Game-1-name");
         $game2 = $this->config->get("Game-2-name");
@@ -299,7 +296,20 @@ class ServerCore extends PluginBase implements Listener {
 
         if ($this->config->get("enable-ui")) {
             if ($item->getName() == TextFormat::BOLD . TextFormat::BLUE . "Menu") {
-                // TODO
+                $form = new SimpleForm(function (Player $player, $data = null) {
+                    if ($data === null) {
+                        return;
+                    }
+
+                    switch ($data) {
+                        case 0:
+                            // TODO
+                            break;
+                        case 1:
+                            // TODO
+                            break;
+                    }
+                });
             }
         } else {
             switch ($item->getName()) {
@@ -363,64 +373,6 @@ class ServerCore extends PluginBase implements Listener {
                     $this->music->startNewTask();
                     break;
             }
-        }
-    }
-
-    public function onBlockBreak(BlockBreakEvent $event) {
-        $player = $event->getPlayer();
-        $name = $player->getName();
-        if ($player->isOP()) {
-            $event->setCancelled(false);
-        } else {
-            $event->setCancelled(true);
-            $player->sendMessage($this->prefix . TextFormat::RED . " You cannot break anything here" . C::GRAY . "!");
-       }
-    }
-
-    public function onBlockPlace(BlockPlaceEvent $event) {
-        $player = $event->getPlayer();
-        $name = $player->getName();
-        if ($player->isOP()) {
-            $event->setCancelled(false);
-        } else {
-            $event->setCancelled(true);
-            $player->sendMessage($this->prefix . TextFormat::RED . " You cannot place anything here" . C::GRAY . "!");
-        }
-    }
-
-    public function onItemHeld(PlayerItemHeldEvent $event) {
-        $player = $event->getPlayer();
-        $name = $player->getName();
-        $item = $player->getInventory()->getItemInHand()->getID();
-        switch ($item) {
-            case 10:
-                if ($this->config->get("disable-lava") == true) {
-                    $player->getInventory()->setItemInHand(Item::get(Item::AIR, 0, 0));
-                    $player->sendMessage($this->prefix . TextFormat::RED . " You are not allowed to use this item");
-                    $this->getLogger()->critical($name . " tried to use lava");
-                }
-                return true;
-            case 11:
-                if ($this->config->get("disable-lava") == true) {
-                    $player->getInventory()->setItemInHand(Item::get(Item::AIR, 0, 0));
-                    $player->sendMessage($this->prefix . TextFormat::RED . " You are not allowed to use this item");
-                    $this->getLogger()->critical($name . " tried to use lava");
-                }
-                return true;
-            case 46:
-                if ($this->config->get("disable-tnt") == true) {
-                    $player->getInventory()->setItemInHand(Item::get(Item::AIR, 0, 0));
-                    $player->sendMessage($this->prefix . TextFormat::RED . " You are not allowed to use this item");
-                    $this->getLogger()->critical($name . " tried to use TNT");
-                }
-                return true;
-            case 325:
-                if ($this->config->get("disable-bucket") == true) {
-                    $player->getInventory()->setItemInHand(Item::get(Item::AIR, 0, 0));
-                    $player->sendMessage($this->prefix . TextFormat::RED . " You are not allowed to use this item");
-                    $this->getLogger()->critical($name . " tried to use bucket");
-                }
-                return true;
         }
     }
 
