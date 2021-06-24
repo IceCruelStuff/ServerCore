@@ -100,33 +100,13 @@ class ServerCore extends PluginBase implements Listener {
         }
 
         $this->config = new Config($this->getDataFolder() . 'config.yml', Config::YAML, [
-            "disable-lava" => false,
-            "disable-tnt" => false,
-            "disable-bucket" => false,
-            "enable-music" => false,
-            "enable-kill-chat" => false
+            "enable-ui" => true,
         ]);
 
         $this->getScheduler()->scheduleRepeatingTask(new ScoreboardTask($this, 0), (int) $this->getConfig()->get("update-interval"));
 
-        if (!$this->config->get("disable-lava")) {
-            $this->config->set("disable-lava", false);
-        }
-
-        if (!$this->config->get("disable-tnt")) {
-            $this->config->set("disable-tnt", false);
-        }
-
-        if (!$this->config->get("disable-bucket")) {
-            $this->config->set("disable-bucket", false);
-        }
-
-        if (!$this->config->get("enable-music")) {
-            $this->config->set("enable-music", false);
-        }
-
-        if (!$this->config->get("enable-kill-chat")) {
-            $this->config->set("enable-kill-chat", false);
+        if (!$this->config->get("enable-ui")) {
+            $this->config->set("enable-ui", true);
         }
 
         if ($this->getServer()->getPluginManager()->getPlugin("ZMusicBox") !== null) {
