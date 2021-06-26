@@ -140,7 +140,6 @@ class ServerCore extends PluginBase implements Listener {
         }
         $this->group = $this->getServer()->getPluginManager()->getPlugin("PurePerms");
         $this->money = EconomyAPI::getInstance();
-        // $this->money = $this->getServer()->getPluginManager()->getPlugin("EconomyAPI");
         if ($this->getServer()->getPluginManager()->getPlugin("KillChat") !== null) {
             $this->killChat = $this->getServer()->getPluginManager()->getPlugin("KillChat");
         } else {
