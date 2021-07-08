@@ -28,4 +28,10 @@ rules:
 enable-ui: true
 broadcast-player-joins: false
 broadcast-admin-joins: false
+
+# Includes an admin tag in join message
+# This will only be activated if broadcast-admin-joins
+# is turned on.
+admin-tag: [ADMIN]
+join-admin-tag: true
 ...
