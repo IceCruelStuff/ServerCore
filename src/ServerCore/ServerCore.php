@@ -176,10 +176,6 @@ class ServerCore extends PluginBase implements Listener {
         $this->getServer()->getCommandMap()->register("warn", new WarnCommand($this));
     }
 
-    public function getMoney() : ?EconomyAPI {
-        return $this->money;
-    }
-
     public function getGroup() {
         return $this->group;
     }
@@ -216,7 +212,7 @@ class ServerCore extends PluginBase implements Listener {
         $player->setFood($player->getMaxFood());
     }
 
-    public function teleportItems(Player $player) {
+    public function giveTeleportItems(Player $player) {
         $player->getInventory()->clearAll();
         $game1 = $this->config->get("Game-1-name");
         $game2 = $this->config->get("Game-2-name");
@@ -228,6 +224,22 @@ class ServerCore extends PluginBase implements Listener {
         $player->removeAllEffects();
         $player->setHealth($player->getMaxHealth());
         $player->setFood($player->getMaxFood());
+    }
+
+    public function sendGames(Player $player) {
+        // TODO
+    }
+
+    public function sendInfo(Player $player) {
+        // TODO
+    }
+
+    public function sendMusic(Player $player) {
+        // TODO
+    }
+
+    public function sendOptions(Player $player) {
+        // TODO
     }
 
     public function onDeath(PlayerDeathEvent $event) {
@@ -245,9 +257,21 @@ class ServerCore extends PluginBase implements Listener {
         $player->teleport(new Vector3($x, $y, $z));
         $this->giveMainItems($player);
         if ($player->isOp()) {
-            $event->setJoinMessage(TextFormat::RED . $name . TextFormat::AQUA . " has joined the game");
+            if ($this->config->get("broadcast-admin-joins")) {
+                $message = TextFormat::RED . $name . TextFormat::AQUA . " has joined the game";
+                if ($this->config->get("join-admin-tag")) {
+                    $message = $this->config->get("admin-tag") . " " . TextFormat::RED . $name . TextFormat::AQUA . " has joined the game";
+                }
+                $event->setJoinMessage($message);
+            } else {
+                $event->setJoinMessage("");
+            }
         } else {
-            $event->setJoinMessage("");
+            if ($this->config->get("broadcast-player-joins")) {
+                $event->setJoinMessage(TextFormat::RED . $name . TextFormat::AQUA . " has joined the game");
+            } else {
+                $event->setJoinMessage("");
+            }
         }
     }
 
@@ -283,18 +307,34 @@ class ServerCore extends PluginBase implements Listener {
 
                     switch ($data) {
                         case 0:
-                            // TODO
+                            $this->sendGames($player);
                             break;
                         case 1:
-                            // TODO
+                            $this->sendInfo($player);
+                            break;
+                        case 2:
+                            $this->sendMusic($player);
+                            break;
+                        case 3:
+                            $this->sendOptions($player);
+                            break;
+                        case 4:
+                            break;
+                        default:
                             break;
                     }
                 });
+                $form->setTitle(TextFormat::AQUA . "Menu");
+                $form->addButton(TextFormat::LIGHT_PURPLE . "Games");
+                $form->addButton(TextFormat::LIGHT_PURPLE . "Info");
+                $form->addButton(TextFormat::LIGHT_PURPLE . "Music");
+                $form->addButton(TextFormat::LIGHT_PURPLE . "Options");
+                $form->addButton(TextFormat::LIGHT_PURPLE . "Close");
             }
         } else {
             switch ($item->getName()) {
                 case TextFormat::BOLD . TextFormat::GOLD . "Teleporter":
-                    $this->teleportItems($player);
+                    $this->giveTeleportItems($player);
                     break;
                 case TextFormat::BOLD . TextFormat::GOLD . "Info":
                     $player->sendMessage($this->prefix . TextFormat::GREEN . "Usage: /info <ranks|server>");
