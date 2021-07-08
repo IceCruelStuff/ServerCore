@@ -26,4 +26,6 @@ rules:
   - Respect all players
 
 enable-ui: true
+broadcast-player-joins: false
+broadcast-admin-joins: false
 ...
