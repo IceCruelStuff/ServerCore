@@ -33,7 +33,6 @@ use pocketmine\plugin\PluginBase;
 use pocketmine\scheduler\TaskScheduler;
 use pocketmine\scheduler\Task;
 use pocketmine\utils\Config;
-use pocketmine\utils\TextFormat as C;
 use pocketmine\utils\TextFormat;
 use pocketmine\Player;
 use pocketmine\Server;
@@ -61,17 +60,17 @@ use jojoe77777\FormAPI\SimpleForm;
 class ServerCore extends PluginBase implements Listener {
 
     public $config;
-    public $deaths;
-    public $faction;
-    public $group;
+    public $deaths = null;
+    public $faction = null;
+    public $group = null;
     public $hideAll;
-    public $kills;
-    public $money;
-    public $music;
-    public $killChat;
+    public $kills = null;
+    public $money = null;
+    public $music = null;
+    public $killChat = null;
     public $warnedPlayers;
     public $mutedPlayers;
-    public $prefix = TextFormat::GRAY . "[" . TextFormat::AQUA . "ServerCore" . TextFormat::GRAY . "] ";
+    public $prefix;
 
     private static $instance;
 
@@ -109,23 +108,8 @@ class ServerCore extends PluginBase implements Listener {
             $this->config->set("enable-ui", true);
         }
 
-        if ($this->getServer()->getPluginManager()->getPlugin("ZMusicBox") !== null) {
-            $this->music = $this->getServer()->getPluginManager()->getPlugin("ZMusicBox");
-        } else {
-            $this->getLogger()->info(TextFormat::RED . "ZMusicBox plugin is not installed. Some features may be disabled.");
-        }
-        if ($this->getServer()->getPluginManager()->getPlugin("FactionsPro") !== null) {
-            $this->faction = $this->getServer()->getPluginManager()->getPlugin("FactionsPro");
-        } else {
-            $this->getLogger()->info(TextFormat::RED . 'FactionsPro plugin is not installed. Some features may be disabled.');
-        }
-        $this->group = $this->getServer()->getPluginManager()->getPlugin("PurePerms");
-        $this->money = EconomyAPI::getInstance();
-        if ($this->getServer()->getPluginManager()->getPlugin("KillChat") !== null) {
-            $this->killChat = $this->getServer()->getPluginManager()->getPlugin("KillChat");
-        } else {
-            $this->getLogger()->info(TextFormat::RED . "KillChat plugin is not installed. Some features may be disabled.");
-        }
+        $this->checkPlugins();
+        $this->prefix = $this->config->get("prefix");
         $this->config->save();
         $this->warnedPlayers->save();
     }
@@ -135,7 +119,29 @@ class ServerCore extends PluginBase implements Listener {
     }
 
     public function onLoad() : void {
-        self::$instance = $this;
+        // self::$instance = $this;
+    }
+
+    public function checkPlugins() {
+        if ($this->getServer()->getPluginManager()->getPlugin("ZMusicBox") !== null) {
+            $this->music = $this->getServer()->getPluginManager()->getPlugin("ZMusicBox");
+        } else {
+            $this->getLogger()->info(TextFormat::RED . "ZMusicBox plugin is not installed. Some features may be disabled.");
+        }
+
+        if ($this->getServer()->getPluginManager()->getPlugin("FactionsPro") !== null) {
+            $this->faction = $this->getServer()->getPluginManager()->getPlugin("FactionsPro");
+        } else {
+            $this->getLogger()->info(TextFormat::RED . 'FactionsPro plugin is not installed. Some features may be disabled.');
+        }
+
+        $this->group = $this->getServer()->getPluginManager()->getPlugin("PurePerms");
+        $this->money = EconomyAPI::getInstance();
+        if ($this->getServer()->getPluginManager()->getPlugin("KillChat") !== null) {
+            $this->killChat = $this->getServer()->getPluginManager()->getPlugin("KillChat");
+        } else {
+            $this->getLogger()->info(TextFormat::RED . "KillChat plugin is not installed. Some features may be disabled.");
+        }
     }
 
     public function registerPermissions() {
@@ -180,7 +186,7 @@ class ServerCore extends PluginBase implements Listener {
         return $this->group;
     }
 
-    public static function getInstance() : ServerCore {
+    public static function getInstance() : self {
         return self::$instance;
     }
 
@@ -212,6 +218,11 @@ class ServerCore extends PluginBase implements Listener {
         $player->setFood($player->getMaxFood());
     }
 
+    public function giveUserInterfaceItems(Player $player) {
+        $player->getInventory()->clearAll();
+        $player->getInventory()->setItem(0, Item::get(Item::COMPASS)->setCustomName(TextFormat::BOLD . TextFormat::BLUE . "Menu"));
+    }
+
     public function giveTeleportItems(Player $player) {
         $player->getInventory()->clearAll();
         $game1 = $this->config->get("Game-1-name");
@@ -226,20 +237,86 @@ class ServerCore extends PluginBase implements Listener {
         $player->setFood($player->getMaxFood());
     }
 
-    public function sendGames(Player $player) {
-        // TODO
+    public function sendGames(Player $sender) {
+        $games = $this->config->get("games");
+        $form = new SimpleForm(function(Player $player, $data = null) {
+            if ($data === null) {
+                return;
+            }
+
+            if ($data >= 0 && $data <= count($games) - 1) {
+                $game = $games[$data];
+                $player->teleport($game["x"], $game["y"], $game["z"]);
+            }
+        });
+        $form->setTitle($this->config->get("game-form-title"));
+        foreach ($games as $game) {
+            $form->addButton($game["name"]);
+        }
+        $form->addButton("Cancel");
+        $form->sendToPlayer($sender);
     }
 
-    public function sendInfo(Player $player) {
-        // TODO
+    public function sendInfo(Player $sender) {
+        $infoPages = $this->config->get("info");
+        $form = new SimpleForm(function(Player $player, $data = null) {
+            if ($data === null) {
+                return;
+            }
+
+            if ($data >= 0 && $data <= count($infoPages) - 1) {
+                $dataForm = new SimpleForm();
+                $dataForm->setTitle($infoPages[$data]["name"]);
+                $dataForm->setContent($infoPages[$data]["content"]);
+                $dataForm->sendToPlayer($player);
+            }
+        });
+        $form->setTitle($this->config->get("info-form-title"));
+        foreach ($infoPages as $page) {
+            $form->addButton($page["name"]);
+        }
+        $form->addButton("Cancel");
+        $form->sendToPlayer($sender);
     }
 
-    public function sendMusic(Player $player) {
-        // TODO
+    public function sendMusic(Player $sender) {
+        $form = new SimpleForm(function(Player $player, $data = null) {
+            if ($data === null) {
+                return;
+            }
+
+            switch ($data) {
+                case 0:
+                    if ($this->music !== null) {
+                        $this->music->startTask();
+                    } else {
+                        $sender->sendMessage(TextFormat::RED . "Music is not enabled on this server");
+                    }
+                    break;
+                default:
+                    break;
+            }
+        });
+        $form->setTitle($this->config->get("music-form-title"));
+        $form->addButton($this->config->get("music-button"));
+        $form->addButton("Cancel");
+        $form->sendToPlayer($sender);
     }
 
-    public function sendOptions(Player $player) {
-        // TODO
+    public function sendOptions(Player $sender) {
+        $form = new SimpleForm(function(Player $player, $data = null) {
+            if ($data === null) {
+                return;
+            }
+
+            switch ($data) {
+                case 0:
+                    // TODO
+                    break;
+            }
+        });
+        $form->setTitle($this->config->get("options-form-title"));
+        $form->sendToPlayer($sender);
     }
 
     public function onDeath(PlayerDeathEvent $event) {
@@ -255,7 +332,11 @@ class ServerCore extends PluginBase implements Listener {
         $z = $spawn->getZ() + 0.5;
         $player->setGamemode(2);
         $player->teleport(new Vector3($x, $y, $z));
-        $this->giveMainItems($player);
+        if ($this->config->get("enable-ui")) {
+            $this->giveUserInterfaceItems($player);
+        } else {
+            $this->giveMainItems($player);
+        }
         if ($player->isOp()) {
             if ($this->config->get("broadcast-admin-joins")) {
                 $message = TextFormat::RED . $name . TextFormat::AQUA . " has joined the game";
@@ -300,23 +381,23 @@ class ServerCore extends PluginBase implements Listener {
 
         if ($this->config->get("enable-ui")) {
             if ($item->getName() == TextFormat::BOLD . TextFormat::BLUE . "Menu") {
-                $form = new SimpleForm(function (Player $player, $data = null) {
+                $form = new SimpleForm(function (Player $user, $data = null) {
                     if ($data === null) {
                         return;
                     }
 
                     switch ($data) {
                         case 0:
-                            $this->sendGames($player);
+                            $this->sendGames($user);
                             break;
                         case 1:
-                            $this->sendInfo($player);
+                            $this->sendInfo($user);
                             break;
                         case 2:
-                            $this->sendMusic($player);
+                            $this->sendMusic($user);
                             break;
                         case 3:
-                            $this->sendOptions($player);
+                            $this->sendOptions($user);
                             break;
                         case 4:
                             break;
@@ -330,6 +411,7 @@ class ServerCore extends PluginBase implements Listener {
                 $form->addButton(TextFormat::LIGHT_PURPLE . "Music");
                 $form->addButton(TextFormat::LIGHT_PURPLE . "Options");
                 $form->addButton(TextFormat::LIGHT_PURPLE . "Close");
+                $form->sendToPlayer($player);
             }
         } else {
             switch ($item->getName()) {
@@ -385,12 +467,12 @@ class ServerCore extends PluginBase implements Listener {
                     $player->getInventory()->setItem(6, Item::get(Item::STICK)->setCustomName(TextFormat::YELLOW . "Hide Players"));
                     unset($this->hideAll[array_search($player, $this->hideAll)]);
                     foreach ($this->getServer()->getOnlinePlayers() as $onlinePlayer) {
-                        $player->showplayer($onlinePlayer);
+                        $player->showPlayer($onlinePlayer);
                     }
                     $player->sendMessage($this->prefix . TextFormat::GREEN . "All players are now visible!");
                     break;
                 case TextFormat::BOLD . TextFormat::GREEN . "Next Song":
-                    $this->music->startNewTask();
+                    $this->music->startTask();
                     break;
             }
         }
