@@ -26,6 +26,11 @@ games:
     y: 0
     z: 0
 
+game-form-title: §1Games
+info-form-title: §1Info
+music-form-title: §1Music
+options-form-title: §1Options
+
 # Positions (for teleport/warp items)
 # This will be ignored if you have "enable-ui" set to true
 Game-1-X: 0
