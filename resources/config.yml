@@ -26,14 +26,19 @@ games:
     y: 0
     z: 0
 
+# Use "\n" to make a new line
+info:
+  - name: About
+    content: This server is a very cool minigames server.
+  - name: Ranks
+    content: MVP
+
+music-button: §5Next Song
+
 game-form-title: §1Games
 info-form-title: §1Info
 music-form-title: §1Music
 options-form-title: §1Options
-
-# Note: use "\n" to make a new line
-form-content:
-  - info: Information about the server:\n Please read the rules
 
 # Positions (for teleport/warp items)
 # This will be ignored if you have "enable-ui" set to true
