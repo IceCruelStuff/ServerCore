@@ -12,7 +12,7 @@ An advanced server core for PocketMine-MP.
 [![Download](https://img.shields.io/badge/download-latest-blue.svg)](https://github.com/IceCruelStuff/ServerCore/releases/latest/)
 
 ## Usage
-1. Download the latest build from **[GitHub Releases](https://github.com/IceCruelStuff/ServerCore/releases/latest/)**.
+1. Download the latest build from **[Releases](https://github.com/IceCruelStuff/ServerCore/releases/latest/)**.
 2. Put the `.phar` file into the `plugins` folder of the server.
 3. Start the server.
 

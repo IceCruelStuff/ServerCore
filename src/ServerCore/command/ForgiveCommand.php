@@ -39,11 +39,13 @@ class ForgiveCommand extends Command implements PluginIdentifiableCommand {
                 $this->plugin->warnedPlayers->save();
                 $player = $this->plugin->getServer()->getPlayer($args[0]);
                 $action = strtolower($this->plugin->warnedPlayers->get("Action"));
-                if ($action === "ban") {
-                    $player->setBanned(false);
-                }
-                if ($action === "deop") {
-                    $player->setOp(true);
+                switch ($action) {
+                    case "ban":
+                        $player->setBanned(false);
+                        break;
+                    case "deop":
+                        $player->setOp(true);
+                        break;
                 }
                 $sender->sendMessage(TextFormat::BLUE . $args[0] . " has been forgiven.");
             } else {

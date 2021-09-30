@@ -43,18 +43,20 @@ class WarnCommand extends Command implements PluginIdentifiableCommand {
                 $message = implode(" ", $args);
                 if ($this->plugin->warnedPlayers->exists($name)) {
                     $action = strtolower($this->plugin->warnedPlayers->get("Action"));
-                    if ($action === "kick") {
-                        $player->kick($message, false);
-                        $sender->sendMessage(TextFormat::DARK_GREEN . $this->plugin->prefix . " " . $player->getName() . " was kicked");
-                    }
-                    if ($action === "ban") {
-                        $player->setBanned(true);
-                        $sender->sendMessage(TextFormat::DARK_GREEN . $this->plugin->prefix . " " . $player->getName() . " was banned");
-                    }
-                    if ($action === "deop") {
-                        $player->setOp(false);
-                        $player->sendMessage(TextFormat::DARK_RED . $this->plugin->prefix . " Admin Warning: " . $message);
-                        $sender->sendMessage(TextFormat::DARK_GREEN . $this->plugin->prefix . " " . $player->getName() . " was deoped");
+                    switch ($action) {
+                        case "kick":
+                            $player->kick($message, false);
+                            $sender->sendMessage(TextFormat::DARK_GREEN . $this->plugin->prefix . " " . $player->getName() . " was kicked");
+                            break;
+                        case "ban":
+                            $player->setBanned(true);
+                            $sender->sendMessage(TextFormat::DARK_GREEN . $this->plugin->prefix . " " . $player->getName() . " was banned");
+                            break;
+                        case "deop":
+                            $player->setOp(false);
+                            $player->sendMessage(TextFormat::DARK_RED . $this->plugin->prefix . " Admin Warning: " . $message);
+                            $sender->sendMessage(TextFormat::DARK_GREEN . $this->plugin->prefix . " " . $player->getName() . " was deoped");
+                            break;
                     }
                 } elseif ($this->plugin->getServer()->getPlayer($name)->isOnline()) {
                     $this->plugin->warnedPlayers->set($name);
