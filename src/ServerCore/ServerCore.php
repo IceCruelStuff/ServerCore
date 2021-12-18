@@ -248,12 +248,15 @@ class ServerCore extends PluginBase implements Listener {
                 $game = $games[$data];
                 $player->teleport($game["x"], $game["y"], $game["z"]);
             }
+            if ($data === count($games)) {
+                $this->sendDefaultForm($player);
+            }
         });
         $form->setTitle($this->config->get("game-form-title"));
         foreach ($games as $game) {
             $form->addButton($game["name"]);
         }
-        $form->addButton("Cancel");
+        $form->addButton("Back");
         $form->sendToPlayer($sender);
     }
 
@@ -270,12 +273,15 @@ class ServerCore extends PluginBase implements Listener {
                 $dataForm->setContent($infoPages[$data]["content"]);
                 $dataForm->sendToPlayer($player);
             }
+            if ($data === count($infoPages)) {
+                $this->sendDefaultForm($player);
+            }
         });
         $form->setTitle($this->config->get("info-form-title"));
         foreach ($infoPages as $page) {
             $form->addButton($page["name"]);
         }
-        $form->addButton("Cancel");
+        $form->addButton("Back");
         $form->sendToPlayer($sender);
     }
 
@@ -293,13 +299,16 @@ class ServerCore extends PluginBase implements Listener {
                         $sender->sendMessage(TextFormat::RED . "Music is not enabled on this server");
                     }
                     break;
+                case 1:
+                    $this->sendDefaultForm($player);
+                    break;
                 default:
                     break;
             }
         });
         $form->setTitle($this->config->get("music-form-title"));
         $form->addButton($this->config->get("music-button"));
-        $form->addButton("Cancel");
+        $form->addButton("Back");
         $form->sendToPlayer($sender);
     }
 
@@ -369,6 +378,40 @@ class ServerCore extends PluginBase implements Listener {
         }
     }
 
+    public function sendDefaultForm($player) {
+        $form = new SimpleForm(function (Player $user, $data = null) {
+            if ($data === null) {
+                return;
+            }
+
+            switch ($data) {
+                case 0:
+                    $this->sendGames($user);
+                    break;
+                case 1:
+                    $this->sendInfo($user);
+                    break;
+                case 2:
+                    $this->sendMusic($user);
+                    break;
+                case 3:
+                    $this->sendOptions($user);
+                    break;
+                case 4:
+                    break;
+                default:
+                    break;
+            }
+        });
+        $form->setTitle(TextFormat::AQUA . "Menu");
+        $form->addButton(TextFormat::LIGHT_PURPLE . "Games");
+        $form->addButton(TextFormat::LIGHT_PURPLE . "Info");
+        $form->addButton(TextFormat::LIGHT_PURPLE . "Music");
+        $form->addButton(TextFormat::LIGHT_PURPLE . "Options");
+        $form->addButton(TextFormat::LIGHT_PURPLE . "Close");
+        $form->sendToPlayer($player);
+    }
+
     public function onInteract(PlayerInteractEvent $event) {
         $player = $event->getPlayer();
         $name = $player->getName();
@@ -381,37 +424,7 @@ class ServerCore extends PluginBase implements Listener {
 
         if ($this->config->get("enable-ui")) {
             if ($item->getName() == TextFormat::BOLD . TextFormat::BLUE . "Menu") {
-                $form = new SimpleForm(function (Player $user, $data = null) {
-                    if ($data === null) {
-                        return;
-                    }
-
-                    switch ($data) {
-                        case 0:
-                            $this->sendGames($user);
-                            break;
-                        case 1:
-                            $this->sendInfo($user);
-                            break;
-                        case 2:
-                            $this->sendMusic($user);
-                            break;
-                        case 3:
-                            $this->sendOptions($user);
-                            break;
-                        case 4:
-                            break;
-                        default:
-                            break;
-                    }
-                });
-                $form->setTitle(TextFormat::AQUA . "Menu");
-                $form->addButton(TextFormat::LIGHT_PURPLE . "Games");
-                $form->addButton(TextFormat::LIGHT_PURPLE . "Info");
-                $form->addButton(TextFormat::LIGHT_PURPLE . "Music");
-                $form->addButton(TextFormat::LIGHT_PURPLE . "Options");
-                $form->addButton(TextFormat::LIGHT_PURPLE . "Close");
-                $form->sendToPlayer($player);
+                $this->sendDefaultForm($player);
             }
         } else {
             switch ($item->getName()) {
