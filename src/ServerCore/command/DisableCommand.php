@@ -48,7 +48,6 @@ class DisableCommand extends Command implements PluginIdentifiableCommand {
         $config = new Config($this->plugin->getDataFolder() . 'players/' . $dbPath, Config::YAML, [
             "break" => true,
             "place" => true,
-            "commands" => true,
             "chat" => true
         ]);
 
@@ -69,12 +68,6 @@ class DisableCommand extends Command implements PluginIdentifiableCommand {
                 $config->set('break', false);
                 $config->save();
                 $sender->sendMessage(TextFormat::GREEN . "Block breaking has been disabled for " . $player->getName());
-                break;
-            case "command":
-            case "commands":
-                $config->set('commands', false);
-                $config->save();
-                $sender->sendMessage(TextFormat::GREEN . "Commands have been disabled for " . $player->getName());
                 break;
             case "chat":
                 $config->set('chat', false);
