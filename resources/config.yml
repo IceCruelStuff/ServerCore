@@ -3,12 +3,45 @@
 info-ranks-command: "MVP: $5"
 info-servers-command: "Welcome to our server!"
 
-# Item names (for teleport/warp items):
+# Item names (for teleport/warp items)
+# If you need more names, you must have
+# enable-ui set to true and enter them in "games" section
 Game-1-name: Game1
 Game-2-name: Game2
 Game-3-name: Game3
 
-# Positions (for teleport/warp items):
+# Games (you can add as many as you want)
+# Note: you must have enable-ui set to true
+games:
+  - name: Game1
+    x: 0
+    y: 0
+    z: 0
+  - name: Game2
+    x: 0
+    y: 0
+    z: 0
+  - name: Game3
+    x: 0
+    y: 0
+    z: 0
+
+# Use "\n" to make a new line
+info:
+  - name: About
+    content: This server is a very cool minigames server.
+  - name: Ranks
+    content: MVP
+
+music-button: §5Next Song
+
+game-form-title: §1Games
+info-form-title: §1Info
+music-form-title: §1Music
+options-form-title: §1Options
+
+# Positions (for teleport/warp items)
+# This will be ignored if you have "enable-ui" set to true
 Game-1-X: 0
 Game-1-Y: 0
 Game-1-Z: 0
@@ -24,4 +57,16 @@ rules:
   - No cheating or exploiting
   - No spamming
   - Respect all players
+
+enable-ui: true
+broadcast-player-joins: false
+broadcast-admin-joins: false
+
+prefix: §7[§bServerCore§7]
+
+# Includes an admin tag in join message
+# This will only be activated if broadcast-admin-joins
+# is turned on.
+admin-tag: [ADMIN]
+join-admin-tag: true
 ...
