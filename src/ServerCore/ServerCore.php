@@ -265,12 +265,13 @@ class ServerCore extends PluginBase implements Listener {
     }
 
     public function sendInfo(Player $sender) {
-        $infoPages = $this->config->get("info");
+        
         $form = new SimpleForm(function(Player $player, $data = null) {
             if ($data === null) {
                 return;
             }
 
+            $infoPages = $this->config->get("info");
             if ($data >= 0 && $data <= count($infoPages) - 1) {
                 $dataForm = new SimpleForm();
                 $dataForm->setTitle($infoPages[$data]["name"]);
@@ -282,7 +283,7 @@ class ServerCore extends PluginBase implements Listener {
             }
         });
         $form->setTitle($this->config->get("info-form-title"));
-        foreach ($infoPages as $page) {
+        foreach ($this->config->get("info") as $page) {
             $form->addButton($page["name"]);
         }
         $form->addButton("Back");
