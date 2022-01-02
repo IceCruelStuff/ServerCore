@@ -11,6 +11,7 @@ use pocketmine\event\block\BlockBreakEvent;
 use pocketmine\event\block\BlockPlaceEvent;
 use pocketmine\event\entity\EntityTeleportEvent;
 use pocketmine\event\player\PlayerChatEvent;
+use pocketmine\event\player\PlayerCommandPreprocessEvent;
 use pocketmine\event\player\PlayerDeathEvent;
 use pocketmine\event\player\PlayerDropItemEvent;
 use pocketmine\event\player\PlayerInteractEvent;
@@ -496,6 +497,18 @@ class ServerCore extends PluginBase implements Listener {
         $player = $event->getPlayer();
         if ($this->mutedPlayers->exists($player->getName())) {
             $player->sendMessage(TextFormat::RED . "You are muted");
+            $event->setCancelled();
+        }
+    }
+
+    public function onPlayerCommandPreprocess(PlayerCommandPreprocessEvent $event) {
+        $dbPath = $this->getServer()->getOnlineMode() ? $event->getPlayer()->getXuid() : strtolower($event->getPlayer()->getName());
+        $config = new Config($this->getDataFolder() . 'players/' . $dbPath, Config::YAML, [
+            "break" => true,
+            "place" => true,
+            "chat" => true
+        ]);
+        if (!$config->get("chat")) {
             $event->setCancelled();
         }
     }
