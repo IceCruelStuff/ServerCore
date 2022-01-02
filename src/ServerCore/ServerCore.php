@@ -309,7 +309,7 @@ class ServerCore extends PluginBase implements Listener {
             }
         });
         $form->setTitle($this->config->get("music-form-title"));
-        $form->addButton($this->config->get("music-button"));
+        $form->addButton("Play Music");
         $form->addButton("Back");
         $form->sendToPlayer($sender);
     }
@@ -350,6 +350,7 @@ class ServerCore extends PluginBase implements Listener {
         $form->addButton(TextFormat::RED . TextFormat::BOLD . "Disable Fly Mode");
         $form->addButton(TextFormat::BLUE . TextFormat::BOLD . "Hide Players");
         $form->addButton(TextFormat::BLUE . TextFormat::BOLD . "Show Players");
+        $form->addButton("Back");
         $form->sendToPlayer($sender);
     }
 
