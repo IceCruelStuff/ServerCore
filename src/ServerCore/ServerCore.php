@@ -38,6 +38,8 @@ use pocketmine\utils\TextFormat;
 use pocketmine\Player;
 use pocketmine\Server;
 use ServerCore\command\ClearCommand;
+use ServerCore\command\EnableCommand;
+use ServerCore\command\DisableCommand;
 use ServerCore\command\FeedCommand;
 use ServerCore\command\FlyCommand;
 use ServerCore\command\ForgiveCommand;
