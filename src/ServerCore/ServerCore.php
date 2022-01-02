@@ -84,10 +84,11 @@ class ServerCore extends PluginBase implements Listener {
         self::$instance = $this;
         $this->scoreboard = new Scoreboard();
         $this->getServer()->getPluginManager()->registerEvents($this, $this);
-        $this->registerPermissions(); // register permissions before commands
+        $this->registerPermissions();
         $this->registerCommands();
 
         @mkdir($this->getDataFolder());
+        @mkdir($this->getDataFolder() . 'players/');
         $this->saveResource("warnedPlayers.txt");
         $this->warnedPlayers = new Config($this->getDataFolder() . "warnedPlayers.txt", Config::ENUM);
 
@@ -116,10 +117,6 @@ class ServerCore extends PluginBase implements Listener {
 
     public function onDisable() : void {
         $this->warnedPlayers->save();
-    }
-
-    public function onLoad() : void {
-        // self::$instance = $this;
     }
 
     public function checkPlugins() {
