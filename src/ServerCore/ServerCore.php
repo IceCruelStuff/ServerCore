@@ -158,6 +158,8 @@ class ServerCore extends PluginBase implements Listener {
         $this->getServer()->getPluginManager()->addPermission(new Permission("command.mute", "Allows player to use /mute", Permission::DEFAULT_OP));
         $this->getServer()->getPluginManager()->addPermission(new Permission("command.unmute", "Allows player to use /unmute", Permission::DEFAULT_OP));
         $this->getServer()->getPluginManager()->addPermission(new Permission("command.pos", "Allows player to use /position", Permission::DEFAULT_TRUE));
+        $this->getServer()->getPluginManager()->addPermission(new Permission("command.enable", "Allows player to use /enable", Permission::DEFAULT_OP));
+        $this->getServer()->getPluginManager()->addPermission(new Permission("command.disable", "Allows player to use /disable", Permission::DEFAULT_OP));
     }
 
     public function registerCommands() {
@@ -177,6 +179,8 @@ class ServerCore extends PluginBase implements Listener {
         $this->getServer()->getCommandMap()->register("vanish", new VanishCommand($this));
         $this->getServer()->getCommandMap()->register("vision", new VisionCommand($this));
         $this->getServer()->getCommandMap()->register("warn", new WarnCommand($this));
+        $this->getServer()->getCommandMap()->register("enable", new EnableCommand($this));
+        $this->getServer()->getCommandMap()->register("disable", new DisableCommand($this));
     }
 
     public function getGroup() {
