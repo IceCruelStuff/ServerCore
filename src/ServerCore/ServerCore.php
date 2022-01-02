@@ -512,5 +512,29 @@ class ServerCore extends PluginBase implements Listener {
             $event->setCancelled();
         }
     }
+    
+    public function onBlockBreak(BlockBreakEvent $event) {
+        $dbPath = $this->getServer()->getOnlineMode() ? $event->getPlayer()->getXuid() : strtolower($event->getPlayer()->getName());
+        $config = new Config($this->getDataFolder() . 'players/' . $dbPath, Config::YAML, [
+            "break" => true,
+            "place" => true,
+            "chat" => true
+        ]);
+        if (!$config->get("break")) {
+            $event->setCancelled();
+        }
+    }
+
+    public function onBlockPlace(BlockPlaceEvent $event) {
+        $dbPath = $this->getServer()->getOnlineMode() ? $event->getPlayer()->getXuid() : strtolower($event->getPlayer()->getName());
+        $config = new Config($this->getDataFolder() . 'players/' . $dbPath, Config::YAML, [
+            "break" => true,
+            "place" => true,
+            "chat" => true
+        ]);
+        if (!$config->get("place")) {
+            $event->setCancelled();
+        }
+    }
 
 }
