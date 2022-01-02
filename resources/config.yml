@@ -26,6 +26,14 @@ games:
     y: 0
     z: 0
 
+# Info Pages (you can add as many as you want)
+# Only works if you have enable-ui set to true
+info:
+  - name: Welcome Page
+    content: Welcome to this cool Minecraft server!
+  - name: About Page
+    content: We have many minigames such as BedWars and SkyWars
+
 # Use "\n" to make a new line
 info:
   - name: About
