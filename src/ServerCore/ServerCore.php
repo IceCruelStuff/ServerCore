@@ -341,6 +341,8 @@ class ServerCore extends PluginBase implements Listener {
                     }
                     $player->sendMessage(TextFormat::BLUE . "All players are no longer invisible");
                     break;
+                case 4:
+                    $this->sendDefaultForm($player);
             }
         });
         $form->setTitle($this->config->get("options-form-title"));
@@ -349,56 +351,6 @@ class ServerCore extends PluginBase implements Listener {
         $form->addButton(TextFormat::BLUE . TextFormat::BOLD . "Hide Players");
         $form->addButton(TextFormat::BLUE . TextFormat::BOLD . "Show Players");
         $form->sendToPlayer($sender);
-    }
-
-    public function onDeath(PlayerDeathEvent $event) {
-        $event->setDeathMessage("");
-    }
-
-    public function onJoin(PlayerJoinEvent $event) {
-        $player = $event->getPlayer();
-        $name = $player->getName();
-        $spawn = $this->getServer()->getDefaultLevel()->getSafeSpawn();
-        $x = $spawn->getX() + 0.5;
-        $y = $spawn->getY() + 0.5;
-        $z = $spawn->getZ() + 0.5;
-        $player->setGamemode(2);
-        $player->teleport(new Vector3($x, $y, $z));
-        if ($this->config->get("enable-ui")) {
-            $this->giveUserInterfaceItems($player);
-        } else {
-            $this->giveMainItems($player);
-        }
-        if ($player->isOp()) {
-            if ($this->config->get("broadcast-admin-joins")) {
-                $message = TextFormat::RED . $name . TextFormat::AQUA . " has joined the game";
-                if ($this->config->get("join-admin-tag")) {
-                    $message = $this->config->get("admin-tag") . " " . TextFormat::RED . $name . TextFormat::AQUA . " has joined the game";
-                }
-                $event->setJoinMessage($message);
-            } else {
-                $event->setJoinMessage("");
-            }
-        } else {
-            if ($this->config->get("broadcast-player-joins")) {
-                $event->setJoinMessage(TextFormat::RED . $name . TextFormat::AQUA . " has joined the game");
-            } else {
-                $event->setJoinMessage("");
-            }
-        }
-    }
-
-    public function onQuit(PlayerQuitEvent $event) {
-        if (isset($this->scoreboards[($player = $event->getPlayer()->getName())])) {
-            unset($this->scoreboards[$player]);
-        }
-        $player = $event->getPlayer();
-        $name = $player->getName();
-        if ($player->isOp()) {
-            $event->setQuitMessage(TextFormat::YELLOW . $name . " has left the game");
-        } else {
-            $event->setQuitMessage("");
-        }
     }
 
     public function sendDefaultForm($player) {
@@ -511,6 +463,56 @@ class ServerCore extends PluginBase implements Listener {
                     $this->music->startTask();
                     break;
             }
+        }
+    }
+
+    public function onDeath(PlayerDeathEvent $event) {
+        $event->setDeathMessage("");
+    }
+
+    public function onJoin(PlayerJoinEvent $event) {
+        $player = $event->getPlayer();
+        $name = $player->getName();
+        $spawn = $this->getServer()->getDefaultLevel()->getSafeSpawn();
+        $x = $spawn->getX() + 0.5;
+        $y = $spawn->getY() + 0.5;
+        $z = $spawn->getZ() + 0.5;
+        $player->setGamemode(2);
+        $player->teleport(new Vector3($x, $y, $z));
+        if ($this->config->get("enable-ui")) {
+            $this->giveUserInterfaceItems($player);
+        } else {
+            $this->giveMainItems($player);
+        }
+        if ($player->isOp()) {
+            if ($this->config->get("broadcast-admin-joins")) {
+                $message = TextFormat::RED . $name . TextFormat::AQUA . " has joined the game";
+                if ($this->config->get("join-admin-tag")) {
+                    $message = $this->config->get("admin-tag") . " " . TextFormat::RED . $name . TextFormat::AQUA . " has joined the game";
+                }
+                $event->setJoinMessage($message);
+            } else {
+                $event->setJoinMessage("");
+            }
+        } else {
+            if ($this->config->get("broadcast-player-joins")) {
+                $event->setJoinMessage(TextFormat::RED . $name . TextFormat::AQUA . " has joined the game");
+            } else {
+                $event->setJoinMessage("");
+            }
+        }
+    }
+
+    public function onQuit(PlayerQuitEvent $event) {
+        if (isset($this->scoreboards[($player = $event->getPlayer()->getName())])) {
+            unset($this->scoreboards[$player]);
+        }
+        $player = $event->getPlayer();
+        $name = $player->getName();
+        if ($player->isOp()) {
+            $event->setQuitMessage(TextFormat::YELLOW . $name . " has left the game");
+        } else {
+            $event->setQuitMessage("");
         }
     }
 
