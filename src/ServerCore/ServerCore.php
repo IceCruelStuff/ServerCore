@@ -322,11 +322,32 @@ class ServerCore extends PluginBase implements Listener {
 
             switch ($data) {
                 case 0:
-                    // TODO
+                    $player->setAllowFlight(true);
+                    $player->sendMessage(TextFormat::GREEN . "Fly mode has been enabled");
+                    break;
+                case 1:
+                    $player->setAllowFlight(false);
+                    $player->sendMessage(TextFormat::RED . "Fly mode has been disabled");
+                    break;
+                case 2:
+                    foreach ($this->getServer()->getOnlinePlayers() as $onlinePlayer) {
+                        $player->hidePlayer($onlinePlayer);
+                    }
+                    $player->sendMessage(TextFormat::BLUE . "All players are now invisible");
+                    break;
+                case 3:
+                    foreach ($this->getServer()->getOnlinePlayers() as $onlinePlayer) {
+                        $player->hidePlayer($onlinePlayer);
+                    }
+                    $player->sendMessage(TextFormat::BLUE . "All players are no longer invisible");
                     break;
             }
         });
         $form->setTitle($this->config->get("options-form-title"));
+        $form->addButton(TextFormat::GREEN . TextFormat::BOLD . "Enable Fly Mode");
+        $form->addButton(TextFormat::RED . TextFormat::BOLD . "Disable Fly Mode");
+        $form->addButton(TextFormat::BLUE . TextFormat::BOLD . "Hide Players");
+        $form->addButton(TextFormat::BLUE . TextFormat::BOLD . "Show Players");
         $form->sendToPlayer($sender);
     }
 
