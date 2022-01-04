@@ -26,7 +26,7 @@ These plugins are optional:
 - **[KillChat](https://github.com/EnderLands/KillChat)**
 
 ```
-Copyright 2020 IceCruelStuff
+Copyright 2020-2022 IceCruelStuff
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
