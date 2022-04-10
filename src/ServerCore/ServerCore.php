@@ -166,24 +166,26 @@ class ServerCore extends PluginBase implements Listener {
     }
 
     public function registerCommands() {
-        $this->getServer()->getCommandMap()->register("clear", new ClearCommand($this));
-        $this->getServer()->getCommandMap()->register("feed", new FeedCommand($this));
-        $this->getServer()->getCommandMap()->register("fly", new FlyCommand($this));
-        $this->getServer()->getCommandMap()->register("forgive", new ForgiveCommand($this));
-        $this->getServer()->getCommandMap()->register("heal", new HealCommand($this));
-        $this->getServer()->getCommandMap()->register("hub", new HubCommand($this));
-        $this->getServer()->getCommandMap()->register("info", new InfoCommand($this));
-        $this->getServer()->getCommandMap()->register("mute", new MuteCommand($this));
-        $this->getServer()->getCommandMap()->register("ping", new PingCommand($this));
-        $this->getServer()->getCommandMap()->register("position", new PositionCommand($this));
-        $this->getServer()->getCommandMap()->register("rules", new RulesCommand($this));
-        $this->getServer()->getCommandMap()->register("smite", new SmiteCommand($this));
-        $this->getServer()->getCommandMap()->register("unmute", new UnmuteCommand($this));
-        $this->getServer()->getCommandMap()->register("vanish", new VanishCommand($this));
-        $this->getServer()->getCommandMap()->register("vision", new VisionCommand($this));
-        $this->getServer()->getCommandMap()->register("warn", new WarnCommand($this));
-        $this->getServer()->getCommandMap()->register("enable", new EnableCommand($this));
-        $this->getServer()->getCommandMap()->register("disable", new DisableCommand($this));
+        $this->getServer()->getCommandMap()->registerAll("server", [
+            new ClearCommand($this),
+            new FeedCommand($this),
+            new FlyCommand($this),
+            new ForgiveCommand($this),
+            new HealCommand($this),
+            new HubCommand($this),
+            new InfoCommand($this),
+            new MuteCommand($this),
+            new PingCommand($this),
+            new PositionCommand($this),
+            new RulesCommand($this),
+            new SmiteCommand($this),
+            new UnmuteCommand($this),
+            new VanishCommmand($this),
+            new VisionCommand($this),
+            new WarmCommand($this),
+            new EnableCommand($this),
+            new DisableCommand($this)
+        ]);
     }
 
     public function getGroup() {
