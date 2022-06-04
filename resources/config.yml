@@ -40,6 +40,8 @@ info-form-title: §1Info
 music-form-title: §1Music
 options-form-title: §1Options
 
+enable-money: true
+
 # Positions (for teleport/warp items)
 # This will be ignored if you have "enable-ui" set to true
 Game-1-X: 0

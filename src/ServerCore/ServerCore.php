@@ -35,7 +35,7 @@ use pocketmine\scheduler\TaskScheduler;
 use pocketmine\scheduler\Task;
 use pocketmine\utils\Config;
 use pocketmine\utils\TextFormat;
-use pocketmine\Player;
+use pocketmine\player\Player;
 use pocketmine\Server;
 use ServerCore\command\ClearCommand;
 use ServerCore\command\EnableCommand;
@@ -58,7 +58,7 @@ use ServerCore\command\WarnCommand;
 use ServerCore\scoreboard\Scoreboard;
 use ServerCore\task\ScoreboardTask;
 use onebone\economyapi\EconomyAPI;
-use jojoe77777\FormAPI\SimpleForm;
+use ServerCore\form\SimpleForm;
 
 class ServerCore extends PluginBase implements Listener {
 
