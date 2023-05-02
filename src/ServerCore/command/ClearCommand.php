@@ -4,13 +4,12 @@ namespace ServerCore\command;
 
 use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
-use pocketmine\command\PluginIdentifiableCommand;
 use pocketmine\plugin\Plugin;
 use pocketmine\utils\TextFormat;
 use pocketmine\Player;
 use ServerCore\ServerCore as Main;
 
-class ClearCommand extends Command implements PluginIdentifiableCommand {
+class ClearCommand extends Command {
 
     private $plugin;
 
